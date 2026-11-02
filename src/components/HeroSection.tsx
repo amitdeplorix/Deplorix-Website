@@ -153,41 +153,54 @@ const HeroSection = () => {
             Software, AI & digital studio in Bangalore
           </motion.span>
 
-          <motion.h1
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.9, delay: 0.1, ease }}
-            className="relative mt-6 text-[2.6rem] leading-[1.1] sm:text-6xl md:text-7xl font-semibold tracking-tight text-foreground"
-          >
-            Build. Deploy. Grow.
-            <br />
-            Software That Ships
-            <br />
-            <span className="text-ghost">For Startups & Students</span>
-            <br />
-            In Bangalore.
+          <div className="relative mt-6">
+            <motion.h1
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.9, delay: 0.1, ease }}
+              className="text-[2.6rem] leading-[1.1] sm:text-6xl md:text-7xl font-semibold tracking-tight text-foreground"
+            >
+              Build. Deploy. Grow.
+              <br />
+              Software That Ships
+              <br />
+              <span className="text-ghost">For Startups & Students</span>
+              <br />
+              In Bangalore.
+            </motion.h1>
 
-            {/* Center overlapping appointment card */}
-            <motion.span
-              initial={{ opacity: 0, y: 20, rotate: -2 }}
-              animate={{ opacity: 1, y: 0, rotate: -6 }}
-              transition={{ duration: 0.9, delay: 1.1, ease }}
-              className="hidden md:block absolute left-1/2 top-[38%] -translate-x-1/2 z-20 w-48 text-left"
+            {/* Floating appointment card — positioned on the upper-right so it never blocks headline text */}
+            <motion.div
+              initial={{ opacity: 0, y: 20, rotate: 0 }}
+              animate={{ opacity: 1, y: [0, -8, 0], rotate: -4 }}
+              transition={{
+                opacity: { duration: 0.8, delay: 0.6, ease },
+                rotate: { duration: 0.8, delay: 0.6, ease },
+                y: { duration: 5, repeat: Infinity, ease: "easeInOut" },
+              }}
+              className="hidden md:block absolute -right-2 lg:-right-8 top-2 md:top-6 z-20 w-48 text-left select-none pointer-events-none"
               aria-hidden
             >
-              <span className="block rounded-2xl bg-brand-gradient p-3.5 shadow-[var(--shadow-brand)]">
-                <span className="block text-[11px] font-normal text-brand-foreground/85">Scoping call with</span>
-                <span className="block text-base font-semibold text-brand-foreground leading-tight">DeploriX Team</span>
-                <span className="mt-2 flex gap-1.5">
-                  <span className="rounded-full bg-card/95 px-2 py-0.5 text-[10px] font-medium text-foreground">Web App</span>
-                  <span className="rounded-full bg-card/95 px-2 py-0.5 text-[10px] font-medium text-foreground">AI</span>
-                </span>
-              </span>
-              <span className="-mt-1 mx-3 flex items-center gap-1.5 rounded-b-xl bg-card px-3 py-2 text-[12px] font-semibold text-foreground shadow-[var(--shadow-card)]">
-                <CalendarClock size={14} /> 12:00 PM, 7 Nov
-              </span>
-            </motion.span>
-          </motion.h1>
+              <div className="overflow-hidden rounded-2xl border border-white/20 shadow-[var(--shadow-brand)]">
+                <div className="bg-brand-gradient p-3.5">
+                  <span className="block text-[11px] font-normal text-brand-foreground/85">Scoping call with</span>
+                  <span className="block text-base font-semibold text-brand-foreground leading-tight">DeploriX Team</span>
+                  <div className="mt-2 flex gap-1.5">
+                    <span className="rounded-full bg-white/20 px-2 py-0.5 text-[10px] font-medium text-white backdrop-blur">
+                      Web App
+                    </span>
+                    <span className="rounded-full bg-white/20 px-2 py-0.5 text-[10px] font-medium text-white backdrop-blur">
+                      AI
+                    </span>
+                  </div>
+                </div>
+                <div className="flex items-center gap-1.5 bg-card px-3.5 py-2 text-[12px] font-semibold text-foreground border-t border-border/40 shadow-[var(--shadow-card)]">
+                  <CalendarClock size={14} className="text-brand shrink-0" />
+                  <span>12:00 PM, 7 Nov</span>
+                </div>
+              </div>
+            </motion.div>
+          </div>
 
           <motion.p
             initial={{ opacity: 0, y: 24 }}

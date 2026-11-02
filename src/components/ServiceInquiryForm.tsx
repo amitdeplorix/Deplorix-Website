@@ -9,29 +9,9 @@ import { ArrowRight, Loader2 } from "lucide-react";
 import { divisions } from "@/data/divisions";
 import { type } from "@/lib/typography";
 import { trackEvent } from "@/lib/analytics";
+import { INQUIRY_EVENT, type InquiryDetail, getPendingInquiry, openInquiry } from "@/lib/inquiry";
 
-export const INQUIRY_EVENT = "deplorix:inquiry";
-
-export type InquiryDetail = {
-  divisionId: string;
-  /** Optional service name to mention in the message. */
-  service?: string;
-  /** Optional pre-filled message body (e.g. an AI generated brief). */
-  message?: string;
-};
-
-const PENDING_KEY = "deplorix:pending-inquiry";
-
-export const openInquiry = (divisionId: string, extra: Omit<InquiryDetail, "divisionId"> = {}) => {
-  const detail: InquiryDetail = { divisionId, ...extra };
-  if (!document.getElementById("service-inquiry")) {
-    // Form lives on the home page — carry the context across the navigation.
-    sessionStorage.setItem(PENDING_KEY, JSON.stringify(detail));
-    window.location.href = `/?division=${encodeURIComponent(divisionId)}#service-inquiry`;
-    return;
-  }
-  window.dispatchEvent(new CustomEvent<InquiryDetail>(INQUIRY_EVENT, { detail }));
-};
+export { openInquiry, INQUIRY_EVENT, type InquiryDetail };
 
 const topicFor = (divisionId: string) => {
   const d = divisions.find((x) => x.id === divisionId);
@@ -121,15 +101,9 @@ const ServiceInquiryForm = () => {
       }
     }
 
-    const pending = sessionStorage.getItem(PENDING_KEY);
+    const pending = getPendingInquiry();
     if (pending) {
-      sessionStorage.removeItem(PENDING_KEY);
-      try {
-        const detail = JSON.parse(pending) as InquiryDetail;
-        setTimeout(() => window.dispatchEvent(new CustomEvent(INQUIRY_EVENT, { detail })), 400);
-      } catch {
-        /* ignore malformed */
-      }
+      setTimeout(() => window.dispatchEvent(new CustomEvent(INQUIRY_EVENT, { detail: pending })), 400);
     }
 
     return () => window.removeEventListener(INQUIRY_EVENT, handler);

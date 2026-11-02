@@ -53,7 +53,7 @@ const AdminCertificates = () => {
         .from("user_roles")
         .select("role")
         .eq("user_id", data.session.user.id);
-      const admin = !!roles?.some((r: any) => r.role === "admin");
+      const admin = !!roles?.some((r: { role: string }) => r.role === "admin");
       setIsAdmin(admin);
       setAuthChecked(true);
       if (admin) load();
@@ -127,6 +127,17 @@ const AdminCertificates = () => {
   const showQr = async (c: Certificate) => {
     setQrId(c.certificate_id);
     setQrDataUrl(await generateQrDataUrl(c.certificate_id));
+  };
+
+  const handleDownloadPdf = async (c: Certificate) => {
+    try {
+      toast.loading("Generating certificate PDF…", { id: `pdf-${c.certificate_id}` });
+      await generateCertificatePdf(c);
+      toast.success("Certificate downloaded", { id: `pdf-${c.certificate_id}` });
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Failed to generate PDF";
+      toast.error(msg, { id: `pdf-${c.certificate_id}` });
+    }
   };
 
   const signOut = async () => {
@@ -231,7 +242,7 @@ const AdminCertificates = () => {
                         <Button size="icon" variant="ghost" title="QR Code" onClick={() => showQr(c)}>
                           <QrCode className="h-4 w-4" />
                         </Button>
-                        <Button size="icon" variant="ghost" title="Download PDF" onClick={() => generateCertificatePdf(c)}>
+                        <Button size="icon" variant="ghost" title="Download PDF" onClick={() => handleDownloadPdf(c)}>
                           <FileDown className="h-4 w-4" />
                         </Button>
                         <Button size="icon" variant="ghost" title="Edit" onClick={() => openEdit(c)}>

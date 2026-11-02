@@ -1,6 +1,6 @@
 # SEO audit report
 
-Generated: 2026-09-18T16:46:20.656Z
+Generated: 2026-11-02T11:15:53.250Z
 
 Routes crawled (10): /, /explore, /terms, /admin/login, /admin/certificates, /work/tech, /work/digital, /work/projects, /work/bps, /work/training
 
@@ -10,7 +10,7 @@ Routes crawled (10): /, /explore, /terms, /admin/login, /admin/certificates, /wo
 - robots.txt allows crawling.
 - robots.txt advertises the sitemap.
 - index.html declares a canonical URL.
-- 2 route component(s) set a per-page canonical via <Seo>.
+- 0 route component(s) set a per-page canonical via <Seo>.
 - All internal links resolve to declared routes.
 
 ## Issues

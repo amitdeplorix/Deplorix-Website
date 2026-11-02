@@ -51,7 +51,6 @@ export const trackEvent = (event: AnalyticsEvent, payload: AnalyticsPayload = {}
   window.gtag?.("event", event, data);
 
   if (import.meta.env.DEV) {
-    // eslint-disable-next-line no-console
     console.info("[analytics]", event, data);
   }
 };

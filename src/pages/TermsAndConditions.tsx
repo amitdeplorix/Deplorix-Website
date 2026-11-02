@@ -1,5 +1,8 @@
 import { ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
+import Seo from "@/components/Seo";
 
 const sections = [
   {
@@ -79,10 +82,18 @@ const sections = [
   },
 ];
 
+const BASE_URL = "https://deplorixtechnologies.site";
+
 const TermsAndConditions = () => {
   return (
     <div className="min-h-screen bg-background">
-      <div className="max-w-4xl mx-auto px-6 md:px-12 py-12 md:py-20">
+      <Seo
+        title="Terms & Conditions | DeploriX Technologies"
+        description="Review the terms and conditions for DeploriX Technologies software development, student projects, digital services, and BPS."
+        canonical={`${BASE_URL}/terms`}
+      />
+      <Navbar />
+      <main className="pt-28 md:pt-36 pb-20 max-w-4xl mx-auto px-6 md:px-12">
         <Link
           to="/"
           className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-10"
@@ -95,24 +106,19 @@ const TermsAndConditions = () => {
           Terms & Conditions
         </h1>
         <p className="mt-4 text-muted-foreground">
-          Last updated: {new Date().toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}
+          Last revised: October 2026 · Effective immediately
         </p>
 
         <div className="mt-12 space-y-10">
           {sections.map((section) => (
-            <div key={section.title}>
+            <div key={section.title} className="rounded-2xl border border-border/40 bg-card/60 p-6 md:p-8">
               <h2 className="text-xl font-semibold text-foreground mb-3">{section.title}</h2>
               <p className="text-muted-foreground leading-relaxed">{section.content}</p>
             </div>
           ))}
         </div>
-
-        <div className="mt-16 pt-8 border-t border-border">
-          <p className="text-sm text-muted-foreground">
-            © {new Date().getFullYear()} DeploriX Technologies. All rights reserved.
-          </p>
-        </div>
-      </div>
+      </main>
+      <Footer />
     </div>
   );
 };

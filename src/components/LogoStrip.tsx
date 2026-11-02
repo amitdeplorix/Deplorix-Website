@@ -16,12 +16,12 @@ const LogoStrip = ({ label = "Built with the stacks modern teams trust" }: { lab
   <div className="relative border-y border-border/80 bg-background/60 backdrop-blur">
     <p className="sr-only">{label}</p>
     <div className="max-w-7xl mx-auto overflow-hidden [mask-image:linear-gradient(to_right,transparent,#000_12%,#000_88%,transparent)]">
-      <div className="flex w-max animate-marquee items-center gap-16 py-7 hover:[animation-play-state:paused]">
+      <div className="flex w-max animate-marquee items-center gap-16 py-7 hover:[animation-play-state:paused] cursor-default select-none">
         {[...items, ...items].map((item, i) => (
           <span
             key={`${item.name}-${i}`}
             aria-hidden={i >= items.length}
-            className={`text-lg md:text-xl text-foreground/45 whitespace-nowrap transition-colors hover:text-foreground ${item.className}`}
+            className={`text-lg md:text-xl text-foreground/45 whitespace-nowrap transition-colors hover:text-foreground cursor-default select-none ${item.className}`}
           >
             {item.name}
           </span>
