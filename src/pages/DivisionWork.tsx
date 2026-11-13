@@ -30,7 +30,7 @@ const DivisionWork = () => {
       areaServed: "Bangalore, India",
       sameAs: [
         "https://www.linkedin.com/company/deplorix-technologies/",
-        "https://www.instagram.com/deplorix.tech",
+        "https://www.instagram.com/deplorixtechnologies/",
       ],
     };
     const service = {

@@ -10,6 +10,19 @@ export type InquiryPayload = {
   message: string;
 };
 
+export type InternshipApplicationPayload = {
+  name: string;
+  email: string;
+  phone: string;
+  college: string;
+  website?: string;
+  resume: {
+    name: string;
+    type: "application/pdf";
+    data: string;
+  };
+};
+
 async function postJson(endpoint: string, payload: unknown) {
   const response = await fetch(endpoint, {
     method: "POST",
@@ -31,6 +44,10 @@ async function postJson(endpoint: string, payload: unknown) {
 
 export async function submitInquiry(payload: InquiryPayload) {
   return postJson("/api/inquiry", payload);
+}
+
+export async function submitInternshipApplication(payload: InternshipApplicationPayload) {
+  return postJson("/api/internship", payload);
 }
 
 export async function checkApiHealth() {

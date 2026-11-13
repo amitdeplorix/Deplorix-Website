@@ -47,7 +47,7 @@ const WhatsAppButton = () => {
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.9 }}
-          href="https://wa.me/918050536508?text=Hi%20DeploriX%2C%20I%27d%20like%20to%20know%20more%20about%20your%20services."
+          href="https://wa.me/919945831090?text=Hi%20DeploriX%2C%20I%27d%20like%20to%20know%20more%20about%20your%20services."
           target="_blank"
           rel="noopener noreferrer"
           aria-label="Chat on WhatsApp"

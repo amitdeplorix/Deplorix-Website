@@ -1,4 +1,9 @@
-import { getDb, saveInquiry } from "./db.js";
+import { getDb, saveInquiry, saveInternshipApplication } from "./db.js";
+import {
+  prepareInternshipApplication,
+  publicInternshipError,
+  sendInternshipApplicationEmail,
+} from "./internship-email.js";
 
 function parseJsonBody(req) {
   return new Promise((resolve, reject) => {
@@ -82,9 +87,46 @@ export function apiMiddlewarePlugin() {
             });
           }
 
+          if (url === "/api/internship" && req.method === "POST") {
+            const body = await parseJsonBody(req);
+            const prepared = prepareInternshipApplication(body);
+            if (prepared.isSpam) {
+              return sendJson(res, 201, { success: true, message: "Application received" });
+            }
+
+            const email = await sendInternshipApplicationEmail(
+              prepared.application,
+              prepared.resume,
+            );
+            let savedId = null;
+            try {
+              const saved = await saveInternshipApplication({
+                ...prepared.application,
+                resumeName: prepared.resume.name,
+                resumeType: prepared.resume.type,
+                resumeSize: prepared.resume.size,
+                emailId: email.id,
+              });
+              savedId = saved.id;
+            } catch (databaseError) {
+              console.error("Internship application emailed but database logging failed:", databaseError);
+            }
+
+            return sendJson(res, 201, {
+              success: true,
+              message: "Application emailed successfully",
+              emailId: email.id,
+              id: savedId,
+            });
+          }
+
           sendJson(res, 404, { error: "API route not found" });
         } catch (err) {
           console.error("API error:", err);
+          if (url === "/api/internship") {
+            const response = publicInternshipError(err);
+            return sendJson(res, response.statusCode, response.body);
+          }
           sendJson(res, 500, { error: "Internal server error", details: err.message });
         }
       });

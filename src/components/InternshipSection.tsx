@@ -1,11 +1,12 @@
 import { useState } from "react";
-import { ArrowRight, Briefcase, CheckCircle2, Code2, GitBranch, Presentation, Users } from "lucide-react";
+import { ArrowRight, Briefcase, CheckCircle2, Code2, GitBranch, Loader2, Presentation, Upload, Users } from "lucide-react";
 import AnimatedSection from "./AnimatedSection";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import internshipImg from "@/assets/internship.jpg";
+import { submitInternshipApplication } from "@/lib/api";
 
 const journey = [
   {
@@ -35,18 +36,84 @@ const outcomes = [
   { icon: CheckCircle2, label: "Placement readiness" },
 ];
 
+const MAX_RESUME_BYTES = 2 * 1024 * 1024;
+
+const fileToBase64 = (file: File) =>
+  new Promise<string>((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const result = typeof reader.result === "string" ? reader.result : "";
+      const [, data = ""] = result.split(",", 2);
+      if (!data) reject(new Error("We couldn't read the selected resume."));
+      else resolve(data);
+    };
+    reader.onerror = () => reject(new Error("We couldn't read the selected resume."));
+    reader.readAsDataURL(file);
+  });
+
 const InternshipSection = () => {
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [form, setForm] = useState({ name: "", email: "", phone: "", college: "" });
+  const [form, setForm] = useState({ name: "", email: "", phone: "", college: "", website: "" });
+  const [resume, setResume] = useState<File | null>(null);
+  const [submitting, setSubmitting] = useState(false);
+  const [sent, setSent] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleApply = (event: React.FormEvent) => {
+  const handleApply = async (event: React.FormEvent) => {
     event.preventDefault();
-    const subject = encodeURIComponent("Internship Application - DeploriX Technologies");
-    const body = encodeURIComponent(
-      `Name: ${form.name}\nEmail: ${form.email}\nPhone: ${form.phone}\nCollege: ${form.college}\n\nPlease attach your latest resume before sending this email.`
-    );
-    window.location.href = `mailto:deplorixtechnologies@gmail.com?subject=${subject}&body=${body}`;
-    setDialogOpen(false);
+    setError(null);
+
+    if (!resume) {
+      setError("Please attach your latest PDF resume.");
+      return;
+    }
+    if (resume.size > MAX_RESUME_BYTES) {
+      setError("Your resume must be 2 MB or smaller.");
+      return;
+    }
+
+    setSubmitting(true);
+    try {
+      const resumeData = await fileToBase64(resume);
+      await submitInternshipApplication({
+        ...form,
+        resume: {
+          name: resume.name,
+          type: "application/pdf",
+          data: resumeData,
+        },
+      });
+      setSent(true);
+      setResume(null);
+      setForm({ name: "", email: "", phone: "", college: "", website: "" });
+    } catch (submissionError) {
+      setError(
+        submissionError instanceof Error
+          ? submissionError.message
+          : "We couldn't send your application. Please try again.",
+      );
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleResume = (file: File | null) => {
+    setError(null);
+    if (!file) {
+      setResume(null);
+      return;
+    }
+    if (file.type !== "application/pdf" && !file.name.toLowerCase().endsWith(".pdf")) {
+      setResume(null);
+      setError("Please choose a PDF resume.");
+      return;
+    }
+    if (file.size > MAX_RESUME_BYTES) {
+      setResume(null);
+      setError("Your resume must be 2 MB or smaller.");
+      return;
+    }
+    setResume(file);
   };
 
   return (
@@ -114,38 +181,85 @@ const InternshipSection = () => {
         </div>
       </div>
 
-      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+      <Dialog
+        open={dialogOpen}
+        onOpenChange={(open) => {
+          setDialogOpen(open);
+          if (!open) {
+            setError(null);
+            setSent(false);
+          }
+        }}
+      >
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle className="text-2xl">Apply for the internship</DialogTitle>
             <DialogDescription>
-              Share your details. Your email app will open with everything prepared; attach your resume before sending.
+              Share your details and PDF resume. Your application is sent directly to the DeploriX careers inbox.
             </DialogDescription>
           </DialogHeader>
+          {sent ? (
+            <div role="status" aria-live="polite" className="mt-4 rounded-3xl border border-emerald-200 bg-emerald-50 p-6 text-center">
+              <span className="mx-auto grid h-12 w-12 place-items-center rounded-full bg-emerald-100 text-emerald-700">
+                <CheckCircle2 size={24} />
+              </span>
+              <h3 className="mt-4 font-display text-xl font-bold text-foreground">Application sent successfully</h3>
+              <p className="mt-2 text-sm leading-6 text-muted-foreground">
+                Your details and resume were delivered directly to deplorixtechnologies@gmail.com.
+              </p>
+              <Button type="button" variant="brand" className="mt-5 h-11 w-full" onClick={() => setDialogOpen(false)}>
+                Done
+              </Button>
+            </div>
+          ) : (
           <form onSubmit={handleApply} className="mt-3 space-y-4">
             <div>
               <Label htmlFor="intern-name">Full name</Label>
-              <Input id="intern-name" required autoComplete="name" placeholder="Your full name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
+              <Input id="intern-name" required autoComplete="name" placeholder="Your full name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} disabled={submitting} />
             </div>
             <div>
               <Label htmlFor="intern-email">Email address</Label>
-              <Input id="intern-email" required autoComplete="email" type="email" placeholder="you@example.com" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
+              <Input id="intern-email" required autoComplete="email" type="email" placeholder="you@example.com" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} disabled={submitting} />
             </div>
             <div>
               <Label htmlFor="intern-phone">Phone number</Label>
-              <Input id="intern-phone" required autoComplete="tel" type="tel" placeholder="+91 XXXXX XXXXX" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} />
+              <Input id="intern-phone" required autoComplete="tel" type="tel" placeholder="+91 XXXXX XXXXX" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} disabled={submitting} />
             </div>
             <div>
               <Label htmlFor="intern-college">College name</Label>
-              <Input id="intern-college" required placeholder="Your college name" value={form.college} onChange={(e) => setForm({ ...form, college: e.target.value })} />
+              <Input id="intern-college" required placeholder="Your college name" value={form.college} onChange={(e) => setForm({ ...form, college: e.target.value })} disabled={submitting} />
             </div>
+            <div>
+              <Label htmlFor="intern-resume">Resume (PDF, maximum 2 MB)</Label>
+              <label htmlFor="intern-resume" className="mt-2 flex min-h-12 cursor-pointer items-center gap-3 rounded-xl border border-dashed border-border bg-secondary/45 px-4 py-3 text-sm transition-colors hover:border-brand/35 hover:bg-brand-soft">
+                <Upload size={18} className="shrink-0 text-brand" />
+                <span className="min-w-0 truncate font-semibold text-foreground">
+                  {resume ? resume.name : "Choose your PDF resume"}
+                </span>
+              </label>
+              <Input
+                id="intern-resume"
+                required
+                type="file"
+                accept="application/pdf,.pdf"
+                className="sr-only"
+                onChange={(event) => handleResume(event.target.files?.[0] ?? null)}
+                disabled={submitting}
+              />
+            </div>
+            <div className="absolute -left-[9999px] top-auto h-px w-px overflow-hidden" aria-hidden="true">
+              <Label htmlFor="intern-website">Website</Label>
+              <Input id="intern-website" tabIndex={-1} autoComplete="off" value={form.website} onChange={(event) => setForm({ ...form, website: event.target.value })} />
+            </div>
+            {error && <p role="alert" className="text-sm font-medium text-destructive">{error}</p>}
             <div className="rounded-2xl bg-brand-soft p-4 text-xs leading-5 text-accent-foreground">
-              Keep your latest PDF resume ready. You’ll attach it when your email app opens.
+              Your application and resume will be emailed securely to the DeploriX careers team.
             </div>
-            <Button type="submit" variant="brand" className="h-12 w-full">
-              Continue to email <ArrowRight size={16} />
+            <Button type="submit" variant="brand" className="h-12 w-full" disabled={submitting}>
+              {submitting ? <><Loader2 size={16} className="animate-spin" /> Sending application…</> : <>Send application <ArrowRight size={16} /></>}
             </Button>
           </form>
+          )}
         </DialogContent>
       </Dialog>
     </section>

@@ -1,4 +1,4 @@
-import { ArrowUpRight, Mail, MessageCircle } from "lucide-react";
+import { ArrowUpRight, Mail, MessageCircle, Phone } from "lucide-react";
 import AnimatedSection from "./AnimatedSection";
 import ServiceInquiryForm from "./ServiceInquiryForm";
 
@@ -18,8 +18,11 @@ const ContactSection = () => (
             <a href="mailto:deplorixtechnologies@gmail.com" className="inline-flex min-h-11 items-center gap-2 rounded-full border border-border bg-card px-4 py-2.5 text-sm font-bold text-foreground shadow-[var(--shadow-soft)] transition-colors hover:bg-secondary">
               <Mail size={15} className="text-brand" /> Email us <ArrowUpRight size={13} />
             </a>
-            <a href="https://wa.me/918050536508" target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center gap-2 rounded-full border border-border bg-card px-4 py-2.5 text-sm font-bold text-foreground shadow-[var(--shadow-soft)] transition-colors hover:bg-secondary">
+            <a href="https://wa.me/919945831090" target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center gap-2 rounded-full border border-border bg-card px-4 py-2.5 text-sm font-bold text-foreground shadow-[var(--shadow-soft)] transition-colors hover:bg-secondary">
               <MessageCircle size={15} className="text-[#1fbd5c]" /> WhatsApp <ArrowUpRight size={13} />
+            </a>
+            <a href="tel:+919945831090" className="inline-flex min-h-11 items-center gap-2 rounded-full border border-border bg-card px-4 py-2.5 text-sm font-bold text-foreground shadow-[var(--shadow-soft)] transition-colors hover:bg-secondary">
+              <Phone size={15} className="text-brand" /> Call us <ArrowUpRight size={13} />
             </a>
           </div>
         </div>

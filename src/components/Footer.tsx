@@ -1,4 +1,4 @@
-import { ArrowUpRight, Instagram, Linkedin, Mail, MapPin } from "lucide-react";
+import { ArrowUpRight, Instagram, Linkedin, Mail, MapPin, Phone } from "lucide-react";
 import { Link } from "react-router-dom";
 import logo from "@/assets/deplorix-logo.png";
 import BrandXMark from "./BrandXMark";
@@ -36,7 +36,7 @@ const columns = [
 const socials = [
   { icon: Mail, href: "mailto:deplorixtechnologies@gmail.com", label: "Email" },
   { icon: Linkedin, href: "https://www.linkedin.com/company/deplorix-technologies/", label: "LinkedIn" },
-  { icon: Instagram, href: "https://www.instagram.com/deplorix.tech", label: "Instagram" },
+  { icon: Instagram, href: "https://www.instagram.com/deplorixtechnologies/", label: "Instagram" },
 ];
 
 const Footer = () => (
@@ -57,6 +57,9 @@ const Footer = () => (
           <p className="mt-5 flex items-center gap-2 text-sm font-semibold text-white/70">
             <MapPin size={16} className="text-[#a98bff]" /> Bangalore, India · Working worldwide
           </p>
+          <a href="tel:+919945831090" className="mt-3 inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-white/70 transition-colors hover:text-white">
+            <Phone size={16} className="text-[#a98bff]" /> +91 99458 31090
+          </a>
           <div className="mt-7 flex gap-2">
             {socials.map((social) => (
               <a

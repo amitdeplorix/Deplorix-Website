@@ -35,3 +35,21 @@ export async function saveInquiry(data) {
   const result = await collection.insertOne(doc);
   return { id: result.insertedId, ...doc };
 }
+
+export async function saveInternshipApplication(data) {
+  const db = await getDb();
+  const collection = db.collection("internship_applications");
+  const doc = {
+    name: data.name.trim(),
+    email: data.email.trim().toLowerCase(),
+    phone: data.phone.trim(),
+    college: data.college.trim(),
+    resumeName: data.resumeName,
+    resumeType: data.resumeType,
+    resumeSize: data.resumeSize,
+    emailId: data.emailId || null,
+    createdAt: new Date(),
+  };
+  const result = await collection.insertOne(doc);
+  return { id: result.insertedId, ...doc };
+}

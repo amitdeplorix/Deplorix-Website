@@ -3,7 +3,12 @@ import cors from "cors";
 import path from "path";
 import { fileURLToPath } from "url";
 import dotenv from "dotenv";
-import { getDb, saveInquiry, getInquiries } from "./db.js";
+import { getDb, saveInquiry, saveInternshipApplication, getInquiries } from "./db.js";
+import {
+  prepareInternshipApplication,
+  publicInternshipError,
+  sendInternshipApplicationEmail,
+} from "./internship-email.js";
 
 dotenv.config();
 
@@ -49,6 +54,41 @@ app.post("/api/inquiry", async (req, res) => {
   } catch (err) {
     console.error("Error saving inquiry to MongoDB:", err);
     res.status(500).json({ error: "Failed to save inquiry to database", details: err.message });
+  }
+});
+
+app.post("/api/internship", async (req, res) => {
+  try {
+    const prepared = prepareInternshipApplication(req.body || {});
+    if (prepared.isSpam) {
+      return res.status(201).json({ success: true, message: "Application received" });
+    }
+
+    const email = await sendInternshipApplicationEmail(prepared.application, prepared.resume);
+    let savedId = null;
+    try {
+      const saved = await saveInternshipApplication({
+        ...prepared.application,
+        resumeName: prepared.resume.name,
+        resumeType: prepared.resume.type,
+        resumeSize: prepared.resume.size,
+        emailId: email.id,
+      });
+      savedId = saved.id;
+    } catch (databaseError) {
+      console.error("Internship application emailed but database logging failed:", databaseError);
+    }
+
+    res.status(201).json({
+      success: true,
+      message: "Application emailed successfully",
+      emailId: email.id,
+      id: savedId,
+    });
+  } catch (error) {
+    console.error("Error emailing internship application:", error);
+    const response = publicInternshipError(error);
+    res.status(response.statusCode).json(response.body);
   }
 });
 
