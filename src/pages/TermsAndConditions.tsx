@@ -93,29 +93,41 @@ const TermsAndConditions = () => {
         canonical={`${BASE_URL}/terms`}
       />
       <Navbar />
-      <main className="pt-28 md:pt-36 pb-20 max-w-4xl mx-auto px-6 md:px-12">
-        <Link
-          to="/"
-          className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-10"
-        >
-          <ArrowLeft size={16} />
-          Back to Home
-        </Link>
+      <main id="main-content" className="px-5 pb-20 pt-28 sm:px-6 md:px-10 md:pt-36 lg:px-16">
+        <div className="site-container">
+          <Link to="/" className="mb-9 inline-flex items-center gap-2 text-sm font-semibold text-muted-foreground transition-colors hover:text-foreground">
+            <ArrowLeft size={16} /> Back to home
+          </Link>
 
-        <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-foreground">
-          Terms & Conditions
-        </h1>
-        <p className="mt-4 text-muted-foreground">
-          Last revised: October 2026 · Effective immediately
-        </p>
-
-        <div className="mt-12 space-y-10">
-          {sections.map((section) => (
-            <div key={section.title} className="rounded-2xl border border-border/40 bg-card/60 p-6 md:p-8">
-              <h2 className="text-xl font-semibold text-foreground mb-3">{section.title}</h2>
-              <p className="text-muted-foreground leading-relaxed">{section.content}</p>
+          <div className="relative overflow-hidden rounded-[2rem] bg-foreground px-7 py-10 text-white md:rounded-[2.5rem] md:px-12 md:py-14">
+            <div className="absolute -right-20 -top-20 h-72 w-72 rounded-full bg-brand/25 blur-3xl" aria-hidden />
+            <div className="relative">
+              <span className="inline-flex rounded-full border border-white/15 bg-white/10 px-3.5 py-1.5 text-xs font-bold uppercase tracking-[0.12em] text-white/70">Legal</span>
+              <h1 className="mt-6 font-display text-4xl font-bold tracking-[-0.045em] text-white md:text-6xl">Terms & Conditions</h1>
+              <p className="mt-4 text-sm text-white/65">Last revised: October 2026 · Effective immediately</p>
             </div>
-          ))}
+          </div>
+
+          <div className="mt-10 grid gap-8 lg:grid-cols-[240px_minmax(0,1fr)] lg:gap-12">
+            <aside className="hidden lg:block">
+              <nav aria-label="Terms sections" className="sticky top-28 max-h-[calc(100vh-8rem)] overflow-y-auto rounded-2xl border border-border/70 bg-card p-3 shadow-[var(--shadow-soft)]">
+                {sections.map((section, index) => (
+                  <a key={section.title} href={`#term-${index + 1}`} className="block rounded-xl px-3 py-2.5 text-xs font-semibold text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground">
+                    {section.title}
+                  </a>
+                ))}
+              </nav>
+            </aside>
+
+            <article className="overflow-hidden rounded-[2rem] border border-border/70 bg-card shadow-[var(--shadow-soft)]">
+              {sections.map((section, index) => (
+                <section key={section.title} id={`term-${index + 1}`} className="scroll-mt-28 border-b border-border/70 p-6 last:border-b-0 md:p-9">
+                  <h2 className="font-display text-xl font-bold tracking-tight text-foreground md:text-2xl">{section.title}</h2>
+                  <p className="mt-4 text-sm leading-7 text-muted-foreground md:text-base md:leading-8">{section.content}</p>
+                </section>
+              ))}
+            </article>
+          </div>
         </div>
       </main>
       <Footer />

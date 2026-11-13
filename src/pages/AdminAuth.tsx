@@ -31,7 +31,7 @@ const AdminAuth = () => {
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
-      <main className="pt-28 pb-20 px-6">
+      <main id="main-content" className="pt-28 pb-20 px-6">
         <div className="max-w-md mx-auto bg-card border border-border rounded-3xl p-8 shadow-[var(--shadow-card)]">
           <h1 className="text-2xl font-bold mb-1">Admin Sign In</h1>
           <p className="text-sm text-muted-foreground mb-6">

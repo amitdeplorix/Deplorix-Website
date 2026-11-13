@@ -8,7 +8,6 @@ import InternshipSection from "@/components/InternshipSection";
 import ProjectsSection from "@/components/ProjectsSection";
 import UpcomingProjectsSection from "@/components/UpcomingProjectsSection";
 import ContactSection from "@/components/ContactSection";
-import CTASection from "@/components/CTASection";
 import Footer from "@/components/Footer";
 import WhatsAppButton from "@/components/WhatsAppButton";
 import ProjectAdvisor from "@/components/ProjectAdvisor";
@@ -18,17 +17,18 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
-      <HeroSection />
-      <AboutSection />
-      <ServicesSection />
-      <FYPSection />
-      <WorkflowSection />
-      <InternshipSection />
-      <ProjectsSection />
-      <UpcomingProjectsSection />
-      <ProjectAdvisor />
-      <ContactSection />
-      <CTASection />
+      <main id="main-content">
+        <HeroSection />
+        <AboutSection />
+        <ServicesSection />
+        <ProjectsSection />
+        <WorkflowSection />
+        <FYPSection />
+        <InternshipSection />
+        <UpcomingProjectsSection />
+        <ProjectAdvisor />
+        <ContactSection />
+      </main>
       <Footer />
       <StickyContactBar />
       <WhatsAppButton />

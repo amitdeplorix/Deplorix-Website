@@ -1,142 +1,49 @@
 import { useState } from "react";
-import { motion, useInView } from "framer-motion";
-import { useRef } from "react";
+import { ArrowRight, Briefcase, CheckCircle2, Code2, GitBranch, Presentation, Users } from "lucide-react";
 import AnimatedSection from "./AnimatedSection";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Users, Rocket, CalendarCheck, Compass, Trophy, Briefcase, ArrowRight,
-  Code, Palette, Bug, Server, GitBranch, Linkedin, Award, Target,
-} from "lucide-react";
 import internshipImg from "@/assets/internship.jpg";
 
-const contentBlocks = [
+const journey = [
   {
-    icon: Users, title: "Team-Based Work",
-    bg: "bg-secondary",
-    iconBg: "bg-accent",
-    items: [
-      { icon: Code, text: "Frontend Developers" },
-      { icon: Server, text: "Backend Developers" },
-      { icon: Palette, text: "UI/UX Designers" },
-      { icon: Bug, text: "Testers" },
-    ],
+    number: "01",
+    title: "Join a product squad",
+    description: "Work alongside developers, designers and testers with clear weekly ownership.",
+    icon: Users,
   },
   {
-    icon: Rocket, title: "Real Project Execution",
-    bg: "bg-secondary",
-    iconBg: "bg-accent",
-    items: [
-      { icon: Briefcase, text: "Live client projects" },
-      { icon: GitBranch, text: "Product development" },
-    ],
+    number: "02",
+    title: "Ship real work",
+    description: "Contribute to live briefs, product builds and practical review cycles—not tutorial clones.",
+    icon: Code2,
   },
   {
-    icon: CalendarCheck, title: "Weekly System",
-    bg: "bg-secondary",
-    iconBg: "bg-accent",
-    items: [
-      { icon: Users, text: "Team meetings" },
-      { icon: Target, text: "Progress reviews" },
-      { icon: CalendarCheck, text: "Regular feedback" },
-    ],
-  },
-  {
-    icon: Compass, title: "Mentorship",
-    bg: "bg-secondary",
-    iconBg: "bg-accent",
-    items: [
-      { icon: Compass, text: "Guided step-by-step" },
-      { icon: Target, text: "Regular monitoring" },
-    ],
-  },
-  {
-    icon: Trophy, title: "Final Growth",
-    bg: "bg-secondary",
-    iconBg: "bg-accent",
-    items: [
-      { icon: Award, text: "Presentation skills" },
-      { icon: Trophy, text: "Confidence building" },
-    ],
-  },
-  {
-    icon: Briefcase, title: "What You Gain",
-    bg: "bg-secondary",
-    iconBg: "bg-accent",
-    items: [
-      { icon: Briefcase, text: "Real experience" },
-      { icon: GitBranch, text: "GitHub portfolio" },
-      { icon: Linkedin, text: "LinkedIn growth" },
-      { icon: Award, text: "Placement readiness" },
-    ],
+    number: "03",
+    title: "Leave with proof",
+    description: "Turn your contribution into a stronger GitHub, portfolio story and interview narrative.",
+    icon: Briefcase,
   },
 ];
 
-const ContentCard = ({ block, index }: { block: typeof contentBlocks[0]; index: number }) => {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-40px" });
-
-  return (
-    <motion.div
-      ref={ref}
-      initial={{ opacity: 0, y: 40 }}
-      animate={isInView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.6, delay: index * 0.1, ease: [0.22, 1, 0.36, 1] }}
-      className={`group rounded-3xl ${block.bg} p-6 hover-lift border border-transparent hover:border-border/30 transition-all duration-500`}
-    >
-      <div className={`w-12 h-12 rounded-xl ${block.iconBg} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-500`}>
-        <block.icon size={22} className="text-foreground" />
-      </div>
-      <h3 className="text-lg font-semibold text-foreground mb-4">{block.title}</h3>
-      <ul className="space-y-2.5">
-        {block.items.map((item) => (
-          <li key={item.text} className="flex items-center gap-3 text-sm text-muted-foreground">
-            <item.icon size={15} className="shrink-0" />
-            {item.text}
-          </li>
-        ))}
-      </ul>
-    </motion.div>
-  );
-};
+const outcomes = [
+  { icon: GitBranch, label: "Git workflow" },
+  { icon: Presentation, label: "Demo confidence" },
+  { icon: Users, label: "Team communication" },
+  { icon: CheckCircle2, label: "Placement readiness" },
+];
 
 const InternshipSection = () => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [form, setForm] = useState({ name: "", email: "", phone: "", college: "" });
-  const [resume, setResume] = useState<File | null>(null);
-  const [resumeError, setResumeError] = useState<string>("");
 
-  const handleResumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0] ?? null;
-    setResumeError("");
-    if (!file) {
-      setResume(null);
-      return;
-    }
-    const allowed = ["application/pdf", "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document"];
-    if (!allowed.includes(file.type)) {
-      setResumeError("Please upload a PDF or Word document.");
-      return;
-    }
-    if (file.size > 5 * 1024 * 1024) {
-      setResumeError("Resume must be under 5MB.");
-      return;
-    }
-    setResume(file);
-  };
-
-  const handleApply = () => {
+  const handleApply = (event: React.FormEvent) => {
+    event.preventDefault();
     const subject = encodeURIComponent("Internship Application - DeploriX Technologies");
     const body = encodeURIComponent(
-      `Name: ${form.name}\nEmail: ${form.email}\nPhone: ${form.phone}\nCollege: ${form.college}\n\nResume: ${resume ? `${resume.name} (${(resume.size / 1024).toFixed(1)} KB) — please attach this file before sending.` : "Not provided"}`
+      `Name: ${form.name}\nEmail: ${form.email}\nPhone: ${form.phone}\nCollege: ${form.college}\n\nPlease attach your latest resume before sending this email.`
     );
     window.location.href = `mailto:deplorixtechnologies@gmail.com?subject=${subject}&body=${body}`;
     setDialogOpen(false);
@@ -144,109 +51,101 @@ const InternshipSection = () => {
 
   return (
     <section id="resources" className="section-padding bg-surface-elevated">
-      <div className="max-w-7xl mx-auto">
-        {/* Header with image */}
-        <div className="grid lg:grid-cols-2 gap-12 items-center mb-16">
+      <div className="site-container">
+        <div className="grid items-center gap-12 lg:grid-cols-[1.05fr_.95fr] lg:gap-20">
           <AnimatedSection>
-            <span className="inline-block px-4 py-1.5 text-xs font-semibold tracking-wider uppercase bg-foreground text-primary-foreground rounded-full mb-6">
-              Careers & Training
-            </span>
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-semibold tracking-tight leading-[1.08] text-foreground">
-              Not a Typical Internship
-            </h2>
-            <p className="mt-6 text-lg text-muted-foreground leading-relaxed">
-              Experience real-world projects, team collaboration, and mentorship that transforms you into an industry-ready developer.
-            </p>
+            <div className="relative">
+              <div className="absolute -inset-5 rounded-[2.5rem] bg-glow opacity-80 blur-2xl" aria-hidden />
+              <div className="relative overflow-hidden rounded-[2rem] border border-white/80 bg-card p-2 shadow-[var(--shadow-elevated)] md:rounded-[2.5rem]">
+                <img
+                  src={internshipImg}
+                  alt="DeploriX interns collaborating on a product project"
+                  className="aspect-[4/3] w-full rounded-[1.65rem] object-cover md:rounded-[2.1rem]"
+                  loading="lazy"
+                  width={1024}
+                  height={768}
+                />
+                <div className="absolute inset-x-6 bottom-6 rounded-2xl border border-white/20 bg-foreground/85 p-4 text-white backdrop-blur-md md:inset-x-8 md:bottom-8 md:p-5">
+                  <p className="text-xs font-bold uppercase tracking-[0.13em] text-white/65">The promise</p>
+                  <p className="mt-1.5 font-display text-lg font-bold tracking-tight md:text-xl">Work that becomes proof—not just a certificate.</p>
+                </div>
+              </div>
+            </div>
           </AnimatedSection>
 
-          <AnimatedSection delay={0.2}>
-            <div className="glass-card overflow-hidden">
-              <img
-                src={internshipImg}
-                alt="Interns collaborating in a mentorship session"
-                className="w-full h-auto object-cover rounded-2xl"
-                loading="lazy"
-                width={1280}
-                height={854}
-              />
+          <AnimatedSection delay={0.12}>
+            <span className="pill-label">Careers & training</span>
+            <h2 className="section-heading mt-6">An internship built around doing the work.</h2>
+            <p className="section-copy mt-6 max-w-xl">
+              Learn in a working team, get direct feedback and build the habits companies actually expect from early-career talent.
+            </p>
+
+            <div className="mt-9 space-y-3">
+              {journey.map((step) => (
+                <article key={step.number} className="group grid grid-cols-[auto_1fr] gap-4 rounded-2xl border border-border/70 bg-card p-4 shadow-[var(--shadow-soft)] transition-all hover:border-brand/25 md:p-5">
+                  <span className="grid h-11 w-11 place-items-center rounded-xl bg-brand-soft text-accent-foreground"><step.icon size={19} /></span>
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-[10px] font-bold uppercase tracking-[0.12em] text-brand">{step.number}</span>
+                      <h3 className="text-base font-bold text-foreground">{step.title}</h3>
+                    </div>
+                    <p className="mt-1.5 text-sm leading-6 text-muted-foreground">{step.description}</p>
+                  </div>
+                </article>
+              ))}
+            </div>
+
+            <div className="mt-7 grid grid-cols-2 gap-2 sm:grid-cols-4 lg:grid-cols-2 xl:grid-cols-4">
+              {outcomes.map((outcome) => (
+                <div key={outcome.label} className="rounded-xl border border-border/60 bg-background px-3 py-3 text-center">
+                  <outcome.icon size={16} className="mx-auto text-brand" />
+                  <p className="mt-2 text-[11px] font-bold leading-4 text-muted-foreground">{outcome.label}</p>
+                </div>
+              ))}
+            </div>
+
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
+              <Button variant="brand" className="h-12 px-7" onClick={() => setDialogOpen(true)}>
+                Apply for the internship <ArrowRight size={16} />
+              </Button>
+              <p className="text-xs leading-5 text-muted-foreground">Applications are reviewed on a rolling basis.</p>
             </div>
           </AnimatedSection>
         </div>
-
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
-          {contentBlocks.map((block, i) => (
-            <ContentCard key={block.title} block={block} index={i} />
-          ))}
-        </div>
-
-        <AnimatedSection delay={0.3}>
-          <div className="glass-card p-8 text-center max-w-2xl mx-auto mb-10">
-            <p className="text-sm text-muted-foreground italic">
-              "Internship details and pricing are available only on the Careers page."
-            </p>
-          </div>
-        </AnimatedSection>
-
-        <AnimatedSection delay={0.4} className="text-center">
-          <Button
-            variant="hero"
-            size="lg"
-            className="text-base px-10 py-6 gap-2"
-            onClick={() => setDialogOpen(true)}
-          >
-            Apply for Internship <ArrowRight size={18} />
-          </Button>
-        </AnimatedSection>
       </div>
 
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>Apply for Internship</DialogTitle>
+            <DialogTitle className="text-2xl">Apply for the internship</DialogTitle>
             <DialogDescription>
-              Fill in your details and we'll get back to you.
+              Share your details. Your email app will open with everything prepared; attach your resume before sending.
             </DialogDescription>
           </DialogHeader>
-          <div className="space-y-4 mt-4">
+          <form onSubmit={handleApply} className="mt-3 space-y-4">
             <div>
-              <Label htmlFor="intern-name">Full Name</Label>
-              <Input id="intern-name" placeholder="Your full name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
+              <Label htmlFor="intern-name">Full name</Label>
+              <Input id="intern-name" required autoComplete="name" placeholder="Your full name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
             </div>
             <div>
-              <Label htmlFor="intern-email">Email Address</Label>
-              <Input id="intern-email" type="email" placeholder="you@example.com" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
+              <Label htmlFor="intern-email">Email address</Label>
+              <Input id="intern-email" required autoComplete="email" type="email" placeholder="you@example.com" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
             </div>
             <div>
-              <Label htmlFor="intern-phone">Phone Number</Label>
-              <Input id="intern-phone" type="tel" placeholder="+91 XXXXX XXXXX" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} />
+              <Label htmlFor="intern-phone">Phone number</Label>
+              <Input id="intern-phone" required autoComplete="tel" type="tel" placeholder="+91 XXXXX XXXXX" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} />
             </div>
             <div>
-              <Label htmlFor="intern-college">College Name</Label>
-              <Input id="intern-college" placeholder="Your college name" value={form.college} onChange={(e) => setForm({ ...form, college: e.target.value })} />
+              <Label htmlFor="intern-college">College name</Label>
+              <Input id="intern-college" required placeholder="Your college name" value={form.college} onChange={(e) => setForm({ ...form, college: e.target.value })} />
             </div>
-            <div>
-              <Label htmlFor="intern-resume">Resume (PDF or Word, max 5MB)</Label>
-              <Input
-                id="intern-resume"
-                type="file"
-                accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-                onChange={handleResumeChange}
-                className="cursor-pointer file:mr-3 file:rounded-md file:border-0 file:bg-foreground file:px-3 file:py-1 file:text-sm file:text-primary-foreground"
-              />
-              {resume && !resumeError && (
-                <p className="mt-1 text-xs text-muted-foreground">Selected: {resume.name}</p>
-              )}
-              {resumeError && (
-                <p className="mt-1 text-xs text-destructive">{resumeError}</p>
-              )}
-              <p className="mt-1 text-xs text-muted-foreground">
-                Note: Your email client will open — please attach the selected file before sending.
-              </p>
+            <div className="rounded-2xl bg-brand-soft p-4 text-xs leading-5 text-accent-foreground">
+              Keep your latest PDF resume ready. You’ll attach it when your email app opens.
             </div>
-            <Button onClick={handleApply} className="w-full" size="lg" disabled={!form.name || !form.email || !form.phone || !form.college || !resume || !!resumeError}>
-              Submit Application
+            <Button type="submit" variant="brand" className="h-12 w-full">
+              Continue to email <ArrowRight size={16} />
             </Button>
-          </div>
+          </form>
         </DialogContent>
       </Dialog>
     </section>

@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label";
 import { divisions, getDivision } from "@/data/divisions";
 import { type } from "@/lib/typography";
 import { trackEvent } from "@/lib/analytics";
-import { openInquiry } from "./ServiceInquiryForm";
+import { openInquiry } from "@/lib/inquiry";
 import { setServiceContext } from "@/lib/service-context";
 
 type Brief = {
@@ -27,6 +27,11 @@ type Brief = {
 const audiences = ["Business", "Startup", "Student", "Institution"];
 const budgets = ["Under ₹25k", "₹25k – ₹1L", "₹1L – ₹5L", "Above ₹5L", "Not sure yet"];
 const timelines = ["ASAP", "2–4 weeks", "1–3 months", "Flexible"];
+const examplePrompts = [
+  "Launch an MVP for my startup",
+  "Grow my local business online",
+  "Plan my final-year AI project",
+];
 
 const Chips = ({
   label,
@@ -40,7 +45,7 @@ const Chips = ({
   onChange: (v: string) => void;
 }) => (
   <div>
-    <p className={type.caption}>{label}</p>
+    <p className="text-[10px] font-bold uppercase tracking-[0.13em] text-white/60">{label}</p>
     <div className="mt-2 flex flex-wrap gap-2">
       {options.map((o) => {
         const active = value === o;
@@ -49,10 +54,11 @@ const Chips = ({
             key={o}
             type="button"
             onClick={() => onChange(active ? "" : o)}
-            className={`rounded-full px-3.5 py-1.5 border transition-colors duration-300 ${
+            aria-pressed={active}
+            className={`min-h-11 rounded-full border px-3.5 py-2 text-xs font-bold transition-colors duration-200 ${
               active
-                ? `bg-foreground text-background border-transparent ${type.pillActive}`
-                : `text-muted-foreground hover:text-foreground border-border/60 ${type.pillIdle}`
+                ? "border-white bg-white text-foreground"
+                : "border-white/15 bg-white/[0.04] text-white/70 hover:border-white/30 hover:text-white"
             }`}
           >
             {o}
@@ -128,44 +134,72 @@ const ProjectAdvisor = () => {
   };
 
   return (
-    <section id="advisor" className="section-padding scroll-mt-28">
-      <div className="max-w-5xl mx-auto">
-        <AnimatedSection className="text-center mb-10">
-          <span className={type.eyebrow}>AI Project Advisor</span>
-          <h2 className={`mt-4 ${type.displayLg}`}>Describe it. Get a plan.</h2>
-          <p className={`mt-6 ${type.lead} max-w-2xl mx-auto`}>
-            Tell us what you're trying to build or grow. You'll get a matched Deplorix division,
-            the exact services involved, and a short project brief you can send straight to us.
+    <section id="advisor" className="section-padding scroll-mt-28 bg-background">
+      <div className="site-container">
+        <AnimatedSection className="grid gap-7 md:grid-cols-[.9fr_1.1fr] md:items-end">
+          <div>
+            <span className={type.eyebrow}>AI project advisor</span>
+            <h2 className="section-heading mt-6">Turn a rough idea into a useful starting plan.</h2>
+          </div>
+          <p className="section-copy max-w-xl md:justify-self-end">
+            Describe the outcome you want. We’ll match the right DeploriX division, outline the likely scope and prepare a brief you can send to the team.
           </p>
         </AnimatedSection>
 
-        <AnimatedSection>
-          <div className="rounded-3xl bg-secondary/40 border border-border/50 p-6 md:p-10">
-            <Label htmlFor="advisor-input" className={type.label}>
+        <AnimatedSection className="mt-12">
+          <div className="relative overflow-hidden rounded-[2rem] bg-foreground p-6 text-white shadow-[var(--shadow-elevated)] md:rounded-[2.5rem] md:p-10 lg:p-12">
+            <div className="absolute -right-20 -top-20 h-72 w-72 rounded-full bg-brand/25 blur-3xl" aria-hidden />
+            <div className="absolute inset-0 bg-grid opacity-[0.08]" aria-hidden />
+            <div className="relative">
+            <div role="status" aria-live="polite" className="sr-only">
+              {loading ? "Building your project brief." : brief ? "Your project recommendation is ready." : ""}
+            </div>
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+              <div>
+                <p className="text-[10px] font-bold uppercase tracking-[0.13em] text-white/60">Your prompt</p>
+                <Label htmlFor="advisor-input" className="mt-1 block font-display text-xl font-bold text-white md:text-2xl">
               What do you need?
-            </Label>
+                </Label>
+              </div>
+              <p className="text-xs text-white/60">Be specific about the user, goal and timeline.</p>
+            </div>
             <Textarea
               id="advisor-input"
-              rows={4}
+              rows={5}
               maxLength={1200}
-              className="mt-2 bg-background"
+              className="mt-4 min-h-[150px] border-white/10 bg-white/[0.07] text-base text-white shadow-none placeholder:text-white/50 hover:border-white/20 focus-visible:border-[#a98bff] focus-visible:ring-[#a98bff]/20"
               placeholder="e.g. We run a dental clinic in Bangalore and want an online booking site with reminders, plus help getting found on Google."
               value={description}
               onChange={(e) => setDescription(e.target.value)}
             />
 
-            <div className="mt-6 grid sm:grid-cols-3 gap-6">
+            <div className="mt-3 flex flex-wrap items-center gap-2">
+              <span className="mr-1 text-[10px] font-bold uppercase tracking-[0.12em] text-white/55">Try an example</span>
+              {examplePrompts.map((prompt) => (
+                <button
+                  key={prompt}
+                  type="button"
+                  onClick={() => setDescription(prompt)}
+                  className="min-h-11 rounded-full border border-white/10 bg-white/[0.04] px-3 py-2 text-xs text-white/70 transition-colors hover:border-white/25 hover:text-white"
+                >
+                  {prompt}
+                </button>
+              ))}
+            </div>
+
+            <div className="mt-8 grid gap-6 border-t border-white/10 pt-7 sm:grid-cols-3">
               <Chips label="You are" options={audiences} value={audience} onChange={setAudience} />
               <Chips label="Budget" options={budgets} value={budget} onChange={setBudget} />
               <Chips label="Timeline" options={timelines} value={timeline} onChange={setTimeline} />
             </div>
 
-            <div className="mt-8 flex flex-wrap items-center gap-3">
+            <div className="mt-9 flex flex-wrap items-center gap-3">
               <Button
+                variant="brand"
                 size="lg"
                 onClick={generate}
                 disabled={loading}
-                className="rounded-full gap-2 font-semibold"
+                className="h-12 rounded-full px-6"
               >
                 {loading ? (
                   <>
@@ -178,14 +212,14 @@ const ProjectAdvisor = () => {
                 )}
               </Button>
               {brief && !loading && (
-                <Button variant="ghost" onClick={generate} className="rounded-full gap-2">
+                <Button variant="ghost" onClick={generate} className="rounded-full text-white/65 hover:bg-white/10 hover:text-white">
                   <RefreshCw size={14} /> Try again
                 </Button>
               )}
             </div>
 
             {error && (
-              <p role="alert" className="mt-4 text-sm text-destructive">
+              <p role="alert" className="mt-4 text-sm text-[#ff9d9d]">
                 {error}
               </p>
             )}
@@ -195,7 +229,7 @@ const ProjectAdvisor = () => {
                 {[0, 1, 2].map((i) => (
                   <div
                     key={i}
-                    className="h-4 rounded-full bg-border/60 animate-pulse"
+                    className="h-3 rounded-full bg-white/10 animate-pulse"
                     style={{ width: `${90 - i * 18}%` }}
                   />
                 ))}
@@ -205,11 +239,14 @@ const ProjectAdvisor = () => {
             <AnimatePresence>
               {brief && division && (
                 <motion.div
+                  role="region"
+                  aria-label="AI project recommendation"
+                  aria-live="polite"
                   initial={{ opacity: 0, y: 16 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0 }}
                   transition={{ duration: 0.5 }}
-                  className={`mt-8 rounded-3xl p-6 md:p-8 ${division.bg}`}
+                  className={`mt-9 rounded-3xl p-6 text-foreground md:p-8 ${division.bg}`}
                 >
                   <div className="flex items-start gap-4">
                     <div
@@ -315,6 +352,7 @@ const ProjectAdvisor = () => {
                 </motion.div>
               )}
             </AnimatePresence>
+            </div>
           </div>
         </AnimatedSection>
       </div>

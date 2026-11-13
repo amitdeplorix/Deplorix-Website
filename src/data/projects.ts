@@ -1,7 +1,7 @@
-import projectFinflow from "@/assets/project-finflow.webp";
-import projectHealthtrack from "@/assets/project-healthtrack.webp";
+import projectFinflow from "@/assets/project-finflow-optimized.jpg";
+import projectHealthtrack from "@/assets/project-healthtrack-optimized.jpg";
 import projectEduconnect from "@/assets/project-educonnect.webp";
-import projectShopease from "@/assets/project-shopease.webp";
+import projectShopease from "@/assets/project-shopease-optimized.jpg";
 
 export type Project = {
   slug: string;

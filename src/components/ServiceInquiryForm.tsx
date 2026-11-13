@@ -1,17 +1,16 @@
 import { useEffect, useState } from "react";
 import { z } from "zod";
+import { toast } from "sonner";
 import AnimatedSection from "./AnimatedSection";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Loader2 } from "lucide-react";
+import { ArrowRight, Clock3, Loader2, MessageSquare, ShieldCheck } from "lucide-react";
 import { divisions } from "@/data/divisions";
-import { type } from "@/lib/typography";
 import { trackEvent } from "@/lib/analytics";
-import { INQUIRY_EVENT, type InquiryDetail, getPendingInquiry, openInquiry } from "@/lib/inquiry";
-
-export { openInquiry, INQUIRY_EVENT, type InquiryDetail };
+import { INQUIRY_EVENT, type InquiryDetail, getPendingInquiry } from "@/lib/inquiry";
+import { submitInquiry } from "@/lib/api";
 
 const topicFor = (divisionId: string) => {
   const d = divisions.find((x) => x.id === divisionId);
@@ -124,7 +123,7 @@ const ServiceInquiryForm = () => {
     validateField(field, form[field]);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const result = inquirySchema.safeParse(form);
     if (!result.success) {
@@ -143,22 +142,25 @@ const ServiceInquiryForm = () => {
     const data = result.data;
     trackEvent("inquiry_form_submit", { division: divisionId, topic: topicFor(divisionId) });
 
-    const subject = encodeURIComponent(`Enquiry — ${topicFor(divisionId)}`);
-    const body = encodeURIComponent(
-      [
-        `Division: ${topicFor(divisionId)}`,
-        `Name: ${data.name}`,
-        `Email: ${data.email}`,
-        `Phone: ${data.phone}`,
-        "",
-        "Details:",
-        data.message,
-        "",
-        `Expected follow-up: ${followUpFor(divisionId)}`,
-      ].join("\n")
-    );
-    window.location.href = `mailto:deplorixtechnologies@gmail.com?subject=${subject}&body=${body}`;
-    window.setTimeout(() => setSubmitting(false), 1500);
+    try {
+      await submitInquiry({
+        division: divisionId,
+        name: data.name,
+        email: data.email,
+        phone: data.phone,
+        message: data.message,
+      });
+
+      toast.success("Inquiry submitted successfully! Our team will contact you shortly.");
+      setForm({ name: "", email: "", phone: "", message: "" });
+      setTouched({});
+      setErrors({});
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Failed to submit inquiry. Please try again.";
+      toast.error(message);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const errorText = (field: keyof FormState) =>
@@ -177,129 +179,115 @@ const ServiceInquiryForm = () => {
 
   return (
     <AnimatedSection>
-      <div
-        id="service-inquiry"
-        className="scroll-mt-28 mt-16 max-w-4xl mx-auto rounded-3xl bg-background border border-border/50 p-8 md:p-10"
-      >
-        <h3 className={type.displayMd}>Tell us what you need</h3>
-        <p className={`mt-3 ${type.body}`}>
-          Pick a division and we'll route your request to the right team.{" "}
-          <span className="text-foreground font-medium">{followUpFor(divisionId)}</span>
-        </p>
+      <div id="service-inquiry" className="mx-auto mt-16 max-w-6xl scroll-mt-28 overflow-hidden rounded-[2rem] border border-border/60 bg-background shadow-[var(--shadow-card)] md:rounded-[2.5rem]">
+        <div className="grid lg:grid-cols-[.82fr_1.18fr]">
+          <aside className="relative overflow-hidden bg-foreground p-7 text-white sm:p-9 lg:p-10">
+            <div className="absolute -left-16 -top-16 h-56 w-56 rounded-full bg-brand/20 blur-3xl" aria-hidden />
+            <div className="relative">
+              <p className="text-xs font-bold uppercase tracking-[0.13em] text-white/60">Start the conversation</p>
+              <h3 className="mt-4 font-display text-3xl font-bold leading-tight tracking-[-0.04em] text-white">Tell us where you want to go next.</h3>
+              <p className="mt-4 text-sm leading-6 text-white/70">
+                Choose the closest-fit division and share enough context for us to make the first reply useful.
+              </p>
 
-        <div className="mt-6 flex flex-wrap gap-2">
-          {divisions.map((d) => {
-            const isActive = d.id === divisionId;
-            return (
-              <button
-                key={d.id}
-                type="button"
-                onClick={() => {
-                  setDivisionId(d.id);
-                  trackEvent("division_selector_click", { division: d.id, location: "inquiry_form" });
-                }}
-                className={`rounded-full px-4 py-2 transition-colors duration-300 border ${
-                  isActive
-                    ? `bg-foreground text-background border-transparent ${type.pillActive}`
-                    : `text-muted-foreground hover:text-foreground border-border/60 ${type.pillIdle}`
-                }`}
-              >
-                {d.short}
-              </button>
-            );
-          })}
+              <div className="mt-8 space-y-4 border-t border-white/10 pt-7">
+                {[
+                  { icon: MessageSquare, title: "Right team, first time", text: "Your request is routed to the relevant division." },
+                  { icon: Clock3, title: "One working day", text: "We aim to respond with a concrete next step." },
+                  { icon: ShieldCheck, title: "No pressure", text: "The first conversation is simply about fit and scope." },
+                ].map((item) => (
+                  <div key={item.title} className="flex gap-3">
+                    <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-white/10 text-[#a98bff]"><item.icon size={16} /></span>
+                    <div>
+                      <p className="text-sm font-bold text-white">{item.title}</p>
+                      <p className="mt-0.5 text-xs leading-5 text-white/60">{item.text}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="mt-8 rounded-2xl border border-white/10 bg-white/[0.06] p-4">
+                <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-white/55">Selected route</p>
+                <p className="mt-1.5 text-sm font-bold text-white">{topicFor(divisionId)}</p>
+                <p className="mt-2 text-xs leading-5 text-white/65">{followUpFor(divisionId)}</p>
+              </div>
+            </div>
+          </aside>
+
+          <div className="p-6 sm:p-9 lg:p-10">
+            <p className="text-xs font-bold uppercase tracking-[0.13em] text-muted-foreground">What can we help with?</p>
+            <div className="-mx-1 mt-4 flex gap-2 overflow-x-auto px-1 pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+              {divisions.map((division) => {
+                const isActive = division.id === divisionId;
+                return (
+                  <button
+                    key={division.id}
+                    type="button"
+                    onClick={() => {
+                      setDivisionId(division.id);
+                      trackEvent("division_selector_click", { division: division.id, location: "inquiry_form" });
+                    }}
+                    aria-pressed={isActive}
+                    className={`min-w-max rounded-full border px-3.5 py-2 text-xs font-bold transition-colors ${
+                      isActive
+                        ? "border-foreground bg-foreground text-background"
+                        : "border-border bg-card text-muted-foreground hover:text-foreground"
+                    }`}
+                  >
+                    {division.short}
+                  </button>
+                );
+              })}
+            </div>
+
+            <form onSubmit={handleSubmit} noValidate className="mt-7 space-y-5">
+              <div className="grid gap-5 sm:grid-cols-2">
+                <div>
+                  <Label htmlFor="inq-name">Full name</Label>
+                  <Input id="inq-name" autoComplete="name" placeholder="Your full name" value={form.name} onChange={(e) => update("name", e.target.value)} {...fieldProps("name")} />
+                  {errorText("name")}
+                </div>
+                <div>
+                  <Label htmlFor="inq-email">Email address</Label>
+                  <Input id="inq-email" autoComplete="email" type="email" placeholder="you@example.com" value={form.email} onChange={(e) => update("email", e.target.value)} {...fieldProps("email")} />
+                  {errorText("email")}
+                </div>
+              </div>
+              <div>
+                <Label htmlFor="inq-phone">Phone number</Label>
+                <Input id="inq-phone" autoComplete="tel" type="tel" placeholder="+91 XXXXX XXXXX" value={form.phone} onChange={(e) => update("phone", e.target.value)} {...fieldProps("phone")} />
+                {errorText("phone")}
+              </div>
+              <div>
+                <div className="flex items-center justify-between gap-4">
+                  <Label htmlFor="inq-message">Your project or requirement</Label>
+                  <span className="text-xs text-muted-foreground">{form.message.length}/1000</span>
+                </div>
+                <Textarea
+                  id="inq-message"
+                  rows={5}
+                  maxLength={1000}
+                  placeholder="What are you trying to achieve? Include your audience, timeline and any constraints."
+                  value={form.message}
+                  onChange={(e) => update("message", e.target.value)}
+                  {...fieldProps("message")}
+                />
+                {errorText("message")}
+              </div>
+
+              <div className="flex flex-col gap-3 border-t border-border/70 pt-5 sm:flex-row sm:items-center sm:justify-between">
+                <p className="max-w-xs text-xs leading-5 text-muted-foreground">We usually respond within one business day with concrete next steps.</p>
+                <Button type="submit" variant="brand" size="lg" disabled={submitting} className="h-12 rounded-full px-6">
+                  {submitting ? (
+                    <><Loader2 size={16} className="animate-spin" /> Submitting…</>
+                  ) : (
+                    <>Submit Request <ArrowRight size={16} /></>
+                  )}
+                </Button>
+              </div>
+            </form>
+          </div>
         </div>
-
-        <form onSubmit={handleSubmit} noValidate className="mt-8 space-y-5">
-          <div>
-            <Label htmlFor="inq-topic" className={type.label}>Inquiry topic</Label>
-            <Input id="inq-topic" value={topicFor(divisionId)} readOnly className="mt-1.5 bg-secondary/60" />
-          </div>
-          <div className="grid sm:grid-cols-2 gap-5">
-            <div>
-              <Label htmlFor="inq-name" className={type.label}>Full name</Label>
-              <Input
-                id="inq-name"
-                placeholder="Your full name"
-                value={form.name}
-                onChange={(e) => update("name", e.target.value)}
-                {...fieldProps("name")}
-              />
-              {errorText("name")}
-            </div>
-            <div>
-              <Label htmlFor="inq-email" className={type.label}>Email address</Label>
-              <Input
-                id="inq-email"
-                type="email"
-                placeholder="you@example.com"
-                value={form.email}
-                onChange={(e) => update("email", e.target.value)}
-                {...fieldProps("email")}
-              />
-              {errorText("email")}
-            </div>
-          </div>
-          <div>
-            <Label htmlFor="inq-phone" className={type.label}>Phone number</Label>
-            <Input
-              id="inq-phone"
-              type="tel"
-              placeholder="+91 XXXXX XXXXX"
-              value={form.phone}
-              onChange={(e) => update("phone", e.target.value)}
-              {...fieldProps("phone")}
-            />
-            {errorText("phone")}
-          </div>
-          <div>
-            <Label htmlFor="inq-message" className={type.label}>What do you need?</Label>
-            <Textarea
-              id="inq-message"
-              rows={4}
-              maxLength={1000}
-              placeholder="A short description of your requirement, timeline and budget range."
-              value={form.message}
-              onChange={(e) => update("message", e.target.value)}
-              {...fieldProps("message")}
-            />
-            <div className="flex justify-between gap-4">
-              {errorText("message") ?? <span />}
-              <p className="mt-1.5 text-xs text-muted-foreground">{form.message.length}/1000</p>
-            </div>
-          </div>
-
-          {/* Pre-submit summary */}
-          <div className="rounded-2xl bg-secondary/50 border border-border/40 p-5">
-            <p className={type.headingXs}>Before you send</p>
-            <dl className="mt-3 grid sm:grid-cols-2 gap-x-6 gap-y-2 text-sm">
-              <div className="flex gap-2">
-                <dt className="text-muted-foreground">Division:</dt>
-                <dd className="font-semibold text-foreground">{topicFor(divisionId)}</dd>
-              </div>
-              <div className="flex gap-2">
-                <dt className="text-muted-foreground">Reply to:</dt>
-                <dd className="font-semibold text-foreground break-all">{form.email || "—"}</dd>
-              </div>
-              <div className="flex gap-2 sm:col-span-2">
-                <dt className="text-muted-foreground">What happens next:</dt>
-                <dd className="text-foreground">{followUpFor(divisionId)}</dd>
-              </div>
-            </dl>
-          </div>
-
-          <Button type="submit" size="lg" disabled={submitting} className="rounded-full gap-2 font-semibold">
-            {submitting ? (
-              <>
-                <Loader2 size={16} className="animate-spin" /> Opening your email app…
-              </>
-            ) : (
-              <>
-                Send request <ArrowRight size={16} />
-              </>
-            )}
-          </Button>
-        </form>
       </div>
     </AnimatedSection>
   );

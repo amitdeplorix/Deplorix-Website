@@ -4,55 +4,54 @@
 
 @layer base {
   :root {
-    /* Clean SaaS palette: white canvas, near-black ink, soft violet + peach glows */
-    --background: 0 0% 100%;
-    --foreground: 0 0% 7%;
+    --background: 30 33% 99%;
+    --foreground: 240 18% 9%;
 
     --card: 0 0% 100%;
-    --card-foreground: 0 0% 7%;
+    --card-foreground: 240 18% 9%;
 
     --popover: 0 0% 100%;
     --popover-foreground: 0 0% 7%;
 
-    --primary: 0 0% 9%;
+    --primary: 240 18% 9%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 0 0% 97%;
-    --secondary-foreground: 0 0% 9%;
+    --secondary: 252 33% 97%;
+    --secondary-foreground: 240 18% 9%;
 
-    --muted: 0 0% 96%;
-    --muted-foreground: 0 0% 42%;
+    --muted: 252 20% 95%;
+    --muted-foreground: 240 7% 40%;
 
-    --accent: 272 90% 96%;
-    --accent-foreground: 272 60% 38%;
+    --accent: 257 100% 96%;
+    --accent-foreground: 258 72% 43%;
 
-    --brand: 272 82% 64%;
+    --brand: 258 89% 61%;
     --brand-foreground: 0 0% 100%;
-    --brand-soft: 272 90% 95%;
-    --peach: 32 100% 88%;
-    --ink: 0 0% 9%;
-    --ghost: 0 0% 62%;
+    --brand-soft: 257 100% 96%;
+    --peach: 31 100% 88%;
+    --ink: 240 18% 9%;
+    --ghost: 242 7% 58%;
 
     --destructive: 0 72% 50%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 0 0% 91%;
-    --input: 0 0% 89%;
-    --ring: 272 82% 64%;
+    --border: 250 16% 88%;
+    --input: 250 16% 85%;
+    --ring: 258 89% 61%;
 
-    --radius: 1rem;
+    --radius: 1.125rem;
 
     /* Custom tokens */
-    --surface-elevated: 0 0% 98.5%;
+    --surface-elevated: 252 40% 98%;
     --surface-glass: 0 0% 100% / 0.8;
-    --gradient-hero: radial-gradient(60% 60% at 75% 40%, hsl(272 90% 80% / 0.55), transparent 70%),
-      radial-gradient(50% 55% at 25% 60%, hsl(32 100% 82% / 0.6), transparent 70%);
-    --gradient-subtle: linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(0 0% 98%) 100%);
-    --gradient-brand: linear-gradient(135deg, hsl(272 82% 68%), hsl(282 78% 58%));
-    --shadow-soft: 0 2px 16px -4px hsl(0 0% 0% / 0.06);
-    --shadow-card: 0 10px 30px -12px hsl(0 0% 0% / 0.12), 0 2px 6px -2px hsl(0 0% 0% / 0.05);
-    --shadow-elevated: 0 24px 60px -20px hsl(0 0% 0% / 0.2);
-    --shadow-brand: 0 18px 40px -16px hsl(272 82% 50% / 0.55);
+    --gradient-hero: radial-gradient(55% 60% at 82% 18%, hsl(260 100% 83% / 0.7), transparent 72%),
+      radial-gradient(50% 60% at 20% 76%, hsl(272 90% 92% / 0.5), transparent 72%);
+    --gradient-subtle: linear-gradient(180deg, hsl(30 33% 99%) 0%, hsl(252 40% 98%) 100%);
+    --gradient-brand: linear-gradient(135deg, hsl(258 89% 65%), hsl(276 83% 55%));
+    --shadow-soft: 0 8px 28px -16px hsl(244 35% 18% / 0.18);
+    --shadow-card: 0 18px 50px -28px hsl(244 35% 18% / 0.3), 0 2px 8px -3px hsl(244 35% 18% / 0.08);
+    --shadow-elevated: 0 30px 80px -38px hsl(244 35% 18% / 0.42);
+    --shadow-brand: 0 24px 52px -22px hsl(258 89% 50% / 0.52);
 
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 0 0% 9%;
@@ -72,16 +71,28 @@
 
   html {
     scroll-behavior: smooth;
+    scroll-padding-top: 6rem;
   }
 
   body {
     @apply bg-background text-foreground font-sans antialiased;
     overflow-x: clip;
+    min-width: 320px;
+    text-rendering: optimizeLegibility;
   }
 
   h1, h2, h3 {
     @apply font-display;
-    letter-spacing: -0.02em;
+    letter-spacing: -0.035em;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  button, a {
+    -webkit-tap-highlight-color: transparent;
   }
 
   ::selection {
@@ -95,12 +106,24 @@
 
 @layer components {
   .glass-card {
-    @apply bg-card/80 backdrop-blur-xl border border-border/70 rounded-2xl;
+    @apply bg-card/85 backdrop-blur-xl border border-white/80 rounded-3xl;
     box-shadow: var(--shadow-card);
   }
 
   .section-padding {
-    @apply px-6 md:px-12 lg:px-20 py-20 md:py-28;
+    @apply px-5 sm:px-6 md:px-10 lg:px-16 py-20 md:py-24 lg:py-28;
+  }
+
+  .site-container {
+    @apply mx-auto w-full max-w-7xl;
+  }
+
+  .section-heading {
+    @apply font-display text-4xl font-bold leading-[1.02] tracking-[-0.045em] text-foreground md:text-5xl lg:text-6xl;
+  }
+
+  .section-copy {
+    @apply text-base leading-7 text-muted-foreground md:text-lg;
   }
 
   .bg-gradient-subtle {
@@ -117,16 +140,17 @@
   }
 
   .hover-lift {
-    @apply transition-all duration-500 ease-out;
+    @apply transition-[transform,box-shadow,border-color] duration-300 ease-out;
   }
 
   .hover-lift:hover {
-    transform: translateY(-4px);
+    transform: translateY(-6px);
     box-shadow: var(--shadow-elevated);
   }
 
   .nav-glass {
-    @apply bg-background/80 backdrop-blur-xl border-b border-border/60;
+    @apply bg-background/90 backdrop-blur-2xl border-b border-border/70;
+    box-shadow: 0 10px 35px -28px hsl(var(--foreground) / 0.45);
   }
 
   /* Soft violet + peach glow used behind heroes and highlight blocks */
@@ -139,7 +163,7 @@
     background-image:
       linear-gradient(to right, hsl(var(--foreground) / 0.06) 1px, transparent 1px),
       linear-gradient(to bottom, hsl(var(--foreground) / 0.06) 1px, transparent 1px);
-    background-size: 64px 64px;
+    background-size: 56px 56px;
     -webkit-mask-image: radial-gradient(ellipse 60% 55% at 50% 45%, #000 40%, transparent 80%);
     mask-image: radial-gradient(ellipse 60% 55% at 50% 45%, #000 40%, transparent 80%);
   }
@@ -150,7 +174,7 @@
 
   /* Floating UI card */
   .float-card {
-    @apply bg-card rounded-2xl border border-border/70;
+    @apply bg-card/95 rounded-2xl border border-white;
     box-shadow: var(--shadow-card);
   }
 
@@ -161,8 +185,15 @@
 
   /* Small pill label above section headings */
   .pill-label {
-    @apply inline-flex items-center gap-2 rounded-full border border-border bg-card px-3.5 py-1.5 text-xs font-medium text-foreground/80;
+    @apply inline-flex items-center gap-2 rounded-full border border-brand/15 bg-brand-soft px-3.5 py-1.5 text-xs font-bold uppercase tracking-[0.12em] text-accent-foreground;
     box-shadow: var(--shadow-soft);
+  }
+
+  .noise-overlay {
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.16'/%3E%3C/svg%3E");
+    opacity: 0.035;
+    mix-blend-mode: multiply;
+    pointer-events: none;
   }
 
   @keyframes marquee {
@@ -171,6 +202,16 @@
   }
   .animate-marquee {
     animation: marquee 32s linear infinite;
+  }
+}
+
+@media (max-width: 639px) {
+  .section-padding {
+    @apply py-16;
+  }
+
+  .hover-lift:hover {
+    transform: none;
   }
 }
 

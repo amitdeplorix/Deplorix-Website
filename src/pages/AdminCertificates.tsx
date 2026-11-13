@@ -157,7 +157,7 @@ const AdminCertificates = () => {
     return (
       <div className="min-h-screen bg-background">
         <Navbar />
-        <main className="pt-28 px-6 max-w-2xl mx-auto text-center">
+        <main id="main-content" className="pt-28 px-6 max-w-2xl mx-auto text-center">
           <h1 className="text-2xl font-bold">Access Restricted</h1>
           <p className="text-muted-foreground mt-2">
             Your account doesn't have the admin role. Ask an existing admin to grant it
@@ -173,7 +173,7 @@ const AdminCertificates = () => {
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
-      <main className="pt-28 pb-20 px-6 md:px-12">
+      <main id="main-content" className="pt-28 pb-20 px-6 md:px-12">
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
             <div>

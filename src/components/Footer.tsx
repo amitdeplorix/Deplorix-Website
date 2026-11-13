@@ -1,39 +1,34 @@
-import { Linkedin, Instagram, Mail } from "lucide-react";
+import { ArrowUpRight, Instagram, Linkedin, Mail, MapPin } from "lucide-react";
 import { Link } from "react-router-dom";
 import logo from "@/assets/deplorix-logo.png";
-
-const handleNavClick = (href: string) => {
-  const element = document.querySelector(href);
-  if (element) {
-    element.scrollIntoView({ behavior: "smooth" });
-  }
-};
+import BrandXMark from "./BrandXMark";
 
 const columns = [
   {
-    title: "DIVISIONS",
+    title: "Divisions",
     links: [
-      { label: "Deplorix Tech", href: "/work/tech", isRoute: true },
-      { label: "Deplorix Digital", href: "/work/digital", isRoute: true },
-      { label: "Deplorix Projects", href: "/work/projects", isRoute: true },
-      { label: "Business Process Solutions", href: "/work/bps", isRoute: true },
-      { label: "Deplorix Training", href: "/work/training", isRoute: true },
+      { label: "Deplorix Tech", href: "/work/tech" },
+      { label: "Deplorix Digital", href: "/work/digital" },
+      { label: "Deplorix Projects", href: "/work/projects" },
+      { label: "Business Process Solutions", href: "/work/bps" },
+      { label: "Deplorix Training", href: "/work/training" },
     ],
   },
   {
-    title: "COMPANY",
+    title: "Company",
     links: [
-      { label: "About", href: "#solutions" },
-      { label: "Careers", href: "#resources" },
-      { label: "Projects", href: "#fyp" },
-      { label: "Contact", href: "#contact" },
+      { label: "About", href: "/#solutions" },
+      { label: "Selected work", href: "/#pricing" },
+      { label: "Process", href: "/#process" },
+      { label: "Internships", href: "/#resources" },
+      { label: "Explore", href: "/explore" },
     ],
   },
   {
-    title: "SUPPORT",
+    title: "Support",
     links: [
-      { label: "Terms & Conditions", href: "/terms", isRoute: true },
-      { label: "Contact Support", href: "mailto:deplorixtechnologies@gmail.com" },
+      { label: "Contact", href: "/#contact" },
+      { label: "Terms & Conditions", href: "/terms" },
     ],
   },
 ];
@@ -44,73 +39,65 @@ const socials = [
   { icon: Instagram, href: "https://www.instagram.com/deplorix.tech", label: "Instagram" },
 ];
 
-const Footer = () => {
-  return (
-    <footer className="bg-primary text-primary-foreground/70 rounded-t-[2rem] mx-3 md:mx-5 mb-0">
-      <div className="max-w-7xl mx-auto px-6 md:px-12 py-16 md:py-20">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-10 md:gap-8">
-          {columns.map((col) => (
-            <div key={col.title}>
-              <h4 className="text-xs font-semibold text-primary-foreground/50 tracking-wider mb-4 pb-3 border-b border-primary-foreground/10">
-                {col.title}
-              </h4>
-              <ul className="space-y-3">
-                {col.links.map((link) => (
+const Footer = () => (
+  <footer className="relative isolate mx-2 overflow-hidden rounded-t-[2rem] bg-foreground text-white sm:mx-3 md:mx-5 md:rounded-t-[2.5rem]">
+    <BrandXMark className="absolute -bottom-36 -right-20 -z-10 w-[460px] opacity-[0.09] sm:w-[620px]" />
+    <div className="site-container relative px-6 py-14 md:px-12 md:py-20">
+      <div className="grid gap-12 border-b border-white/10 pb-12 lg:grid-cols-[1.25fr_1.75fr] lg:gap-20">
+        <div>
+          <Link to="/" className="inline-flex items-center gap-3 text-white" aria-label="DeploriX Technologies home">
+            <span className="grid h-12 w-12 place-items-center rounded-2xl bg-white">
+              <img src={logo} alt="" className="h-9 w-9 rounded-full object-contain" width={36} height={36} />
+            </span>
+            <span className="font-display text-xl font-extrabold tracking-[-0.035em]">deploriX</span>
+          </Link>
+          <p className="mt-6 max-w-sm text-sm leading-6 text-white/65">
+            A Bangalore-based product and digital studio helping businesses and students move from idea to launch.
+          </p>
+          <p className="mt-5 flex items-center gap-2 text-sm font-semibold text-white/70">
+            <MapPin size={16} className="text-[#a98bff]" /> Bangalore, India · Working worldwide
+          </p>
+          <div className="mt-7 flex gap-2">
+            {socials.map((social) => (
+              <a
+                key={social.label}
+                href={social.href}
+                target={social.href.startsWith("mailto") ? undefined : "_blank"}
+                rel="noopener noreferrer"
+                aria-label={social.label}
+                className="grid h-11 w-11 place-items-center rounded-full border border-white/10 bg-white/[0.06] text-white/70 transition-colors hover:border-white/25 hover:bg-white/10 hover:text-white"
+              >
+                <social.icon size={18} />
+              </a>
+            ))}
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 gap-x-6 gap-y-10 sm:grid-cols-3">
+          {columns.map((column) => (
+            <div key={column.title}>
+              <h4 className="text-xs font-bold uppercase tracking-[0.14em] text-white/55">{column.title}</h4>
+              <ul className="mt-5 space-y-3.5">
+                {column.links.map((link) => (
                   <li key={link.label}>
-                    {"isRoute" in link && link.isRoute ? (
-                      <Link
-                        to={link.href}
-                        className="text-sm text-primary-foreground/65 hover:text-primary-foreground transition-colors duration-300"
-                      >
-                        {link.label}
-                      </Link>
-                    ) : (
-                      <button
-                        onClick={() => handleNavClick(link.href)}
-                        className="text-sm text-primary-foreground/65 hover:text-primary-foreground transition-colors duration-300 text-left"
-                      >
-                        {link.label}
-                      </button>
-                    )}
+                    <Link to={link.href} className="group inline-flex min-h-11 items-center gap-1.5 text-sm text-white/60 transition-colors hover:text-white">
+                      {link.label}
+                      <ArrowUpRight size={12} className="opacity-0 transition-opacity group-hover:opacity-100" />
+                    </Link>
                   </li>
                 ))}
               </ul>
             </div>
           ))}
-
-          <div>
-            <h4 className="text-xs font-semibold text-primary-foreground/50 tracking-wider mb-4 pb-3 border-b border-primary-foreground/10">
-              CONNECT
-            </h4>
-            <div className="flex items-center gap-3">
-              {socials.map((s) => (
-                <a
-                  key={s.label}
-                  href={s.href}
-                  target={s.href.startsWith("mailto") ? undefined : "_blank"}
-                  rel="noopener noreferrer"
-                  aria-label={s.label}
-                  className="w-10 h-10 rounded-full bg-primary-foreground/10 flex items-center justify-center text-primary-foreground/70 hover:bg-brand hover:text-brand-foreground transition-all duration-300"
-                >
-                  <s.icon size={18} />
-                </a>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        <div className="mt-16 pt-8 border-t border-primary-foreground/10 flex flex-col md:flex-row items-center justify-between gap-4">
-          <a href="#" className="flex items-center gap-2 text-lg font-semibold tracking-tight text-primary-foreground">
-            <img src={logo} alt="DeploriX Technologies logo" className="h-8 w-8 rounded-full bg-card p-1 object-contain" width={32} height={32} />
-            deploriX<span className="text-primary-foreground/45 font-light">technologies</span>
-          </a>
-          <p className="text-xs text-primary-foreground/45">
-            © {new Date().getFullYear()} DeploriX Technologies. All rights reserved.
-          </p>
         </div>
       </div>
-    </footer>
-  );
-};
+
+      <div className="flex flex-col gap-3 pt-7 text-xs text-white/55 sm:flex-row sm:items-center sm:justify-between">
+        <p>© {new Date().getFullYear()} DeploriX Technologies. All rights reserved.</p>
+        <p>Designed and built with care in Bangalore.</p>
+      </div>
+    </div>
+  </footer>
+);
 
 export default Footer;

@@ -1,6 +1,6 @@
 import AnimatedSection from "./AnimatedSection";
 import { Zap, Shield, Users, CheckCircle2 } from "lucide-react";
-import aboutTeam from "@/assets/about-team.jpg";
+import StudioSystemScene from "./StudioSystemScene";
 
 const features = [
   {
@@ -22,25 +22,23 @@ const features = [
 
 const AboutSection = () => {
   return (
-    <section id="solutions" className="section-padding">
-      <div className="max-w-7xl mx-auto">
-        <div className="grid lg:grid-cols-2 gap-14 lg:gap-20 items-center mb-16 md:mb-20">
+    <section id="solutions" className="section-padding relative overflow-hidden">
+      <div className="absolute right-[-12rem] top-24 h-80 w-80 rounded-full bg-brand/10 blur-3xl" aria-hidden />
+      <div className="site-container relative">
+        <div className="grid items-center gap-14 lg:grid-cols-[.9fr_1.1fr] lg:gap-24">
           <AnimatedSection>
             <span className="pill-label">Why DeploriX</span>
-            <h2 className="mt-5 text-4xl md:text-5xl lg:text-6xl font-semibold tracking-tight leading-[1.08] text-foreground">
-              Crafted with precision.
-              <br />
-              <span className="text-ghost">Delivered with care.</span>
+            <h2 className="section-heading mt-6">
+              Senior thinking without the agency drag.
             </h2>
-            <p className="mt-6 text-lg text-muted-foreground max-w-xl leading-relaxed">
-              We combine thoughtful design with solid engineering to build products, brands and
-              teams that make a measurable difference.
+            <p className="section-copy mt-6 max-w-xl">
+              We bring product strategy, thoughtful design and reliable engineering into one accountable team—so decisions are faster and launches feel calmer.
             </p>
-            <ul className="mt-8 grid sm:grid-cols-2 gap-3 text-sm text-foreground/80">
+            <ul className="mt-8 grid gap-3 text-sm font-semibold text-foreground/80 sm:grid-cols-2">
               {["Bangalore-based team", "Fixed milestones & timelines", "Post-launch support", "Real client projects"].map(
                 (item) => (
-                  <li key={item} className="flex items-center gap-2">
-                    <CheckCircle2 size={16} className="text-brand" /> {item}
+                  <li key={item} className="flex items-center gap-2 rounded-xl border border-border/60 bg-card px-3.5 py-3 shadow-[var(--shadow-soft)]">
+                    <CheckCircle2 size={16} className="shrink-0 text-brand" /> {item}
                   </li>
                 )
               )}
@@ -48,38 +46,21 @@ const AboutSection = () => {
           </AnimatedSection>
 
           <AnimatedSection delay={0.2}>
-            <div className="relative">
-              <div className="absolute -inset-6 bg-glow rounded-[2.5rem] blur-2xl opacity-90" aria-hidden />
-              <div className="relative rounded-[2rem] overflow-hidden border border-border/70 bg-card p-2 shadow-[var(--shadow-elevated)]">
-                <img
-                  src={aboutTeam}
-                  alt="DeploriX team collaborating in a modern workspace"
-                  className="w-full h-auto rounded-[1.6rem] object-cover"
-                  loading="lazy"
-                  width={1024}
-                  height={1024}
-                />
-              </div>
-              <div className="float-card absolute -bottom-6 -left-4 md:-left-8 px-5 py-4">
-                <p className="text-2xl font-semibold text-foreground">40+</p>
-                <p className="text-xs text-muted-foreground">Products shipped</p>
-              </div>
-              <div className="absolute -top-5 -right-3 md:-right-6 rounded-2xl bg-brand-gradient px-5 py-4 shadow-[var(--shadow-brand)]">
-                <p className="text-2xl font-semibold text-brand-foreground">98%</p>
-                <p className="text-xs text-brand-foreground/85">On-time delivery</p>
-              </div>
-            </div>
+            <StudioSystemScene />
           </AnimatedSection>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-5">
+        <div className="mt-20 grid gap-5 md:grid-cols-3">
           {features.map((feature, i) => (
             <AnimatedSection key={feature.title} delay={i * 0.12}>
-              <div className="card-soft p-8 hover-lift group h-full">
-                <div className="w-12 h-12 rounded-2xl bg-accent flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-500">
+              <div className="card-soft group h-full p-7 hover-lift md:p-8">
+                <div className="mb-8 flex items-center justify-between">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-accent transition-transform duration-300 group-hover:scale-105">
                   <feature.icon size={22} className="text-accent-foreground" />
+                  </div>
+                  <span className="font-display text-sm font-bold text-muted-foreground/50">0{i + 1}</span>
                 </div>
-                <h3 className="text-xl font-semibold text-foreground mb-2">{feature.title}</h3>
+                <h3 className="mb-2 text-xl font-bold text-foreground">{feature.title}</h3>
                 <p className="text-muted-foreground leading-relaxed">{feature.description}</p>
               </div>
             </AnimatedSection>

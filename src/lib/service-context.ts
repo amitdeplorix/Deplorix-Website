@@ -11,7 +11,7 @@ export type ServiceContext = {
 
 const EVENT = "deplorix:service-context";
 
-let current: ServiceContext = { divisionId: "tech" };
+let current: ServiceContext = { divisionId: "" };
 
 export const setServiceContext = (ctx: ServiceContext) => {
   if (current.divisionId === ctx.divisionId && current.service === ctx.service) return;

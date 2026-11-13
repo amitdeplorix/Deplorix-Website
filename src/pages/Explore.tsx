@@ -4,7 +4,6 @@ import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import ProjectAdvisor from "@/components/ProjectAdvisor";
 import StickyContactBar from "@/components/StickyContactBar";
 import Seo from "@/components/Seo";
 import HeroPhone from "@/components/HeroPhone";
@@ -32,7 +31,7 @@ const Explore = () => {
       />
       <Navbar />
 
-      <main className="pt-28 md:pt-36 pb-20 px-6 md:px-12 lg:px-20">
+      <main id="main-content" className="pt-28 md:pt-36 pb-20 px-6 md:px-12 lg:px-20">
         <div className="max-w-6xl mx-auto">
           <AnimatedSection className="text-center max-w-2xl mx-auto">
             <span className={type.eyebrow}>Interactive Explorer</span>
@@ -59,6 +58,7 @@ const Explore = () => {
                       setActiveId(d.id);
                       trackEvent("division_selector_click", { division: d.id, source: "explore" });
                     }}
+                    aria-pressed={d.id === activeId}
                     className={`relative h-auto rounded-full px-4 py-2 transition-colors ${
                       d.id === activeId
                         ? `${type.pillActive} text-foreground`
@@ -137,7 +137,6 @@ const Explore = () => {
             </div>
           </div>
         </div>
-        <ProjectAdvisor />
       </main>
 
       <Footer />

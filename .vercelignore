@@ -1,0 +1,19 @@
+# Ignore dependencies and VCS
+node_modules
+.git
+.github
+
+# Ignore build artifacts (Vercel builds dist on its own)
+dist
+
+# Ignore system & ide files
+.vscode
+.idea
+*.log
+.system_generated
+coverage
+powershell.cmd
+
+# Ignore documentation & design plans
+.lovable
+scripts/*.py

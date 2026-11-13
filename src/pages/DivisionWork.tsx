@@ -94,7 +94,7 @@ const DivisionWork = () => {
       />
       <Navbar />
 
-      <main className="pt-28 md:pt-36 pb-20 px-6 md:px-12 lg:px-20">
+      <main id="main-content" className="pt-28 md:pt-36 pb-20 px-6 md:px-12 lg:px-20">
         <div className="max-w-5xl mx-auto">
           <Link
             to="/#products"

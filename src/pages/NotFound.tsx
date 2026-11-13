@@ -22,7 +22,7 @@ const NotFound = () => {
       />
       <Navbar />
 
-      <main className="flex-1 flex items-center justify-center px-6 py-28 md:py-36">
+      <main id="main-content" className="flex-1 flex items-center justify-center px-6 py-28 md:py-36">
         <div className="text-center max-w-md mx-auto">
           <span className="pill-label mb-4 inline-block">Error 404</span>
           <h1 className="text-6xl md:text-8xl font-display font-bold tracking-tight text-foreground">

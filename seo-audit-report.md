@@ -1,6 +1,6 @@
 # SEO audit report
 
-Generated: 2026-11-02T11:15:53.250Z
+Generated: 2026-11-02T12:03:57.914Z
 
 Routes crawled (10): /, /explore, /terms, /admin/login, /admin/certificates, /work/tech, /work/digital, /work/projects, /work/bps, /work/training
 

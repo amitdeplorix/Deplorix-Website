@@ -1,24 +1,14 @@
-import { motion, useInView } from "framer-motion";
-import { useRef, useState } from "react";
+import { motion, useInView, useReducedMotion } from "framer-motion";
+import { useRef } from "react";
 import { Link } from "react-router-dom";
-import { ExternalLink, Code2, Layers, Clock, Users, CheckCircle2, ArrowRight } from "lucide-react";
+import { ArrowUpRight, CheckCircle2, Clock3, Users2 } from "lucide-react";
 import AnimatedSection from "./AnimatedSection";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import BrandXMark from "./BrandXMark";
 import { caseStudyHref } from "@/data/projects";
-import { type } from "@/lib/typography";
-import projectWeb from "@/assets/project-finflow.webp";
-import projectApp from "@/assets/project-healthtrack.webp";
+import projectWeb from "@/assets/project-finflow-optimized.jpg";
+import projectApp from "@/assets/project-healthtrack-optimized.jpg";
 import projectDesign from "@/assets/project-educonnect.webp";
-import projectEcommerce from "@/assets/project-shopease.webp";
-
-const cardColors = [
-  "bg-secondary",
-  "bg-secondary",
-  "bg-secondary",
-  "bg-secondary",
-];
+import projectEcommerce from "@/assets/project-shopease-optimized.jpg";
 
 const projects = [
   {
@@ -102,140 +92,136 @@ const projects = [
 const ProjectsSection = () => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-80px" });
-  const [selectedProject, setSelectedProject] = useState<typeof projects[0] | null>(null);
+  const reduceMotion = useReducedMotion();
+  const [featured, ...supporting] = projects;
 
   return (
     <section id="pricing" className="section-padding bg-gradient-subtle" ref={ref}>
-      <div className="max-w-7xl mx-auto">
-        <AnimatedSection className="text-center mb-14 md:mb-20">
-          <span className={type.eyebrow}>
-            Portfolio
-          </span>
-          <h2 className={`mt-4 ${type.displayLg}`}>
-            Selected work
-          </h2>
+      <div className="site-container">
+        <AnimatedSection className="mb-12 grid gap-7 md:mb-16 md:grid-cols-[.9fr_1.1fr] md:items-end">
+          <div>
+            <span className="pill-label">Selected work</span>
+            <h2 className="section-heading mt-6">Built for the real world, not the moodboard.</h2>
+          </div>
+          <p className="section-copy max-w-xl md:justify-self-end">
+            A selection of products shaped from early decisions through launch—combining useful experiences with dependable engineering.
+          </p>
         </AnimatedSection>
 
-        <div className="grid md:grid-cols-2 gap-6">
-          {projects.map((project, i) => (
-            <motion.div
-              key={project.title}
-              initial={{ opacity: 0, y: 50 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.7, delay: i * 0.12, ease: [0.22, 1, 0.36, 1] }}
-              className="group cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-4 rounded-3xl"
-              onClick={() => setSelectedProject(project)}
-              onKeyDown={(event) => {
-                if (event.key === "Enter" || event.key === " ") setSelectedProject(project);
-              }}
-              role="button"
-              tabIndex={0}
-              aria-label={`Explore ${project.title}`}
-            >
-              <div className={`rounded-3xl overflow-hidden hover-lift border border-transparent hover:border-border/30 transition-all duration-500 ${cardColors[i % cardColors.length]}`}>
-                <div className="aspect-[4/3] overflow-hidden relative">
-                  <img
-                    src={project.image}
-                    alt={project.title}
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                    loading="lazy"
-                    width={960}
-                    height={640}
-                  />
-                  <div className="absolute inset-0 bg-foreground/0 group-hover:bg-foreground/40 transition-colors duration-500 flex items-center justify-center">
-                    <span className="text-background font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-center gap-2">
-                      <ExternalLink className="w-5 h-5" /> Explore Project
-                    </span>
-                  </div>
+        <motion.div
+          initial={{ opacity: 0, y: 34 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.75, ease: [0.22, 1, 0.36, 1] }}
+        >
+          <Link
+            to={caseStudyHref(featured.divisionId)}
+            className="group relative isolate grid overflow-hidden rounded-[2rem] bg-foreground text-white shadow-[var(--shadow-elevated)] lg:grid-cols-[1.25fr_.75fr]"
+            aria-label={`Read the ${featured.title} case study`}
+          >
+            <BrandXMark className="absolute -bottom-28 -right-24 z-0 w-80 opacity-[0.07]" />
+            <div className="relative min-h-[320px] overflow-hidden bg-[radial-gradient(circle_at_35%_30%,rgba(126,90,255,0.3),transparent_58%)] sm:min-h-[440px] lg:min-h-[560px] lg:[perspective:1500px]">
+              <div
+                className={`absolute inset-3 overflow-hidden rounded-[1.5rem] border border-white/15 bg-secondary shadow-[0_28px_70px_-30px_rgba(0,0,0,0.85)] sm:inset-5 lg:inset-7 lg:[transform-style:preserve-3d] ${
+                  reduceMotion
+                    ? ""
+                    : "lg:transition-transform lg:duration-700 lg:ease-out lg:[transform:rotateX(0deg)_rotateY(0deg)_translateZ(0)] lg:group-hover:[transform:rotateX(-1.5deg)_rotateY(3deg)_translateZ(18px)]"
+                }`}
+              >
+                <img
+                  src={featured.image}
+                  alt={`${featured.title} product interface`}
+                  className={`absolute inset-0 h-full w-full object-cover ${
+                    reduceMotion ? "" : "transition-transform duration-700 ease-out group-hover:scale-[1.02]"
+                  }`}
+                  loading="lazy"
+                  width={1920}
+                  height={1440}
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-foreground/65 via-transparent to-transparent lg:bg-gradient-to-r lg:from-transparent lg:to-foreground/15" />
+                <span className="absolute left-4 top-4 rounded-full border border-white/25 bg-foreground/45 px-3 py-1.5 text-xs font-bold uppercase tracking-[0.12em] text-white backdrop-blur md:left-5 md:top-5">
+                  Featured case study
+                </span>
+              </div>
+            </div>
+
+            <div className="relative z-10 flex flex-col p-7 sm:p-9 lg:p-10">
+              <div className="flex items-start justify-between gap-4">
+                <span className="text-xs font-bold uppercase tracking-[0.14em] text-white/65">{featured.category}</span>
+                <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-white/15 bg-white/10 transition-transform duration-300 group-hover:-translate-y-1 group-hover:translate-x-1 group-hover:bg-white group-hover:text-foreground">
+                  <ArrowUpRight size={18} />
+                </span>
+              </div>
+              <div className="mt-auto pt-14 lg:pt-8">
+                <h3 className="font-display text-3xl font-bold tracking-[-0.04em] text-white md:text-4xl">{featured.title}</h3>
+                <p className="mt-4 text-sm leading-6 text-white/70 md:text-base md:leading-7">{featured.description}</p>
+                <div className="mt-6 border-l border-brand/50 pl-4">
+                  <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-white/45">What shipped</p>
+                  <ul className="mt-3 space-y-2">
+                    {featured.highlights.slice(0, 2).map((highlight) => (
+                      <li key={highlight} className="flex gap-2 text-xs leading-5 text-white/70">
+                        <CheckCircle2 size={14} className="mt-0.5 shrink-0 text-[#a98bff]" />
+                        <span>{highlight}</span>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
-                <div className="p-6">
-                  <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                    {project.category}
-                  </span>
-                  <div className="mt-1 flex items-center justify-between gap-4">
-                    <h3 className={type.headingSm}>{project.title}</h3>
-                    <ArrowRight className="h-4 w-4 shrink-0 text-muted-foreground transition-transform duration-300 group-hover:translate-x-1" />
-                  </div>
+                <div className="mt-7 flex flex-wrap gap-x-5 gap-y-2 text-xs font-semibold text-white/60">
+                  <span className="flex items-center gap-2"><Clock3 size={15} className="text-[#a98bff]" /> {featured.duration}</span>
+                  <span className="flex items-center gap-2"><Users2 size={15} className="text-[#a98bff]" /> {featured.team}</span>
+                </div>
+                <div className="mt-7 flex flex-wrap gap-2 border-t border-white/10 pt-6">
+                  {featured.techStack.slice(0, 4).map((tech) => (
+                    <span key={tech} className="rounded-full bg-white/[0.07] px-3 py-1.5 text-[11px] font-semibold text-white/70">{tech}</span>
+                  ))}
                 </div>
               </div>
+            </div>
+          </Link>
+        </motion.div>
+
+        <div className="mt-5 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+          {supporting.map((project, index) => (
+            <motion.div
+              key={project.title}
+              initial={{ opacity: 0, y: 30 }}
+              animate={isInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.65, delay: 0.12 + index * 0.08, ease: [0.22, 1, 0.36, 1] }}
+            >
+              <Link
+                to={caseStudyHref(project.divisionId)}
+                className="group flex h-full flex-col overflow-hidden rounded-3xl border border-border/70 bg-card shadow-[var(--shadow-soft)] transition-[transform,box-shadow,border-color] duration-300 hover:-translate-y-1.5 hover:border-brand/20 hover:shadow-[var(--shadow-card)]"
+                aria-label={`Read the ${project.title} case study`}
+              >
+                <div className="relative aspect-[4/3] overflow-hidden bg-secondary">
+                  <img
+                    src={project.image}
+                    alt={`${project.title} product interface`}
+                    className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.035]"
+                    loading="lazy"
+                    width={960}
+                    height={720}
+                  />
+                  <span className="absolute left-4 top-4 rounded-full bg-background/90 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.12em] text-foreground backdrop-blur">
+                    {project.category}
+                  </span>
+                </div>
+                <div className="flex flex-1 flex-col p-6">
+                  <div className="flex items-start justify-between gap-4">
+                    <h3 className="font-display text-xl font-bold tracking-tight text-foreground">{project.title}</h3>
+                    <ArrowUpRight size={17} className="mt-1 shrink-0 text-muted-foreground transition-transform duration-300 group-hover:-translate-y-1 group-hover:translate-x-1 group-hover:text-brand" />
+                  </div>
+                  <p className="mt-3 line-clamp-3 text-sm leading-6 text-muted-foreground">{project.description}</p>
+                  <div className="mt-auto flex items-center gap-4 border-t border-border/60 pt-5 text-xs font-semibold text-muted-foreground">
+                    <span>{project.duration}</span>
+                    <span className="h-1 w-1 rounded-full bg-brand" />
+                    <span>{project.team}</span>
+                  </div>
+                </div>
+              </Link>
             </motion.div>
           ))}
         </div>
       </div>
-
-      <Dialog open={!!selectedProject} onOpenChange={() => setSelectedProject(null)}>
-        <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto">
-          {selectedProject && (
-            <>
-              <DialogHeader>
-                <div className="flex items-center gap-3 mb-1">
-                  <Badge variant="secondary">{selectedProject.category}</Badge>
-                  <Badge variant="outline" className="flex items-center gap-1">
-                    <Clock className="w-3 h-3" /> {selectedProject.duration}
-                  </Badge>
-                  <Badge variant="outline" className="flex items-center gap-1">
-                    <Users className="w-3 h-3" /> {selectedProject.team}
-                  </Badge>
-                </div>
-                <DialogTitle className="text-2xl">{selectedProject.title}</DialogTitle>
-                <DialogDescription className="text-base mt-2">
-                  {selectedProject.description}
-                </DialogDescription>
-              </DialogHeader>
-
-              <div className="space-y-6 mt-4">
-                <div>
-                  <h4 className="text-sm font-semibold text-foreground flex items-center gap-2 mb-3">
-                    <Code2 className="w-4 h-4 text-primary" /> Tech Stack Used
-                  </h4>
-                  <div className="flex flex-wrap gap-2">
-                    {selectedProject.techStack.map((tech) => (
-                      <span
-                        key={tech}
-                        className="px-3 py-1.5 text-xs font-medium rounded-full bg-primary/10 text-primary border border-primary/20"
-                      >
-                        {tech}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-
-                <div>
-                  <h4 className="text-sm font-semibold text-foreground flex items-center gap-2 mb-3">
-                    <Layers className="w-4 h-4 text-primary" /> Key Features & Highlights
-                  </h4>
-                  <div className="grid gap-2">
-                    {selectedProject.highlights.map((highlight, idx) => (
-                      <div key={idx} className="flex items-start gap-2">
-                        <CheckCircle2 className="w-4 h-4 text-primary mt-0.5 shrink-0" />
-                        <span className="text-sm text-muted-foreground">{highlight}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="rounded-lg bg-secondary/50 p-4 border border-border">
-                  <h4 className="text-sm font-semibold text-foreground mb-2">
-                    How We Built It
-                  </h4>
-                  <p className="text-sm text-muted-foreground leading-relaxed">
-                    {selectedProject.process}
-                  </p>
-                </div>
-
-                <Button asChild variant="hero" className="w-full sm:w-auto">
-                  <Link
-                    to={caseStudyHref(selectedProject.divisionId)}
-                    onClick={() => setSelectedProject(null)}
-                  >
-                    See relevant case study <ArrowRight className="h-4 w-4" />
-                  </Link>
-                </Button>
-              </div>
-            </>
-          )}
-        </DialogContent>
-      </Dialog>
     </section>
   );
 };

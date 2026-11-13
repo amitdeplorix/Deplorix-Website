@@ -13,10 +13,10 @@ const items: { name: string; className: string }[] = [
 ];
 
 const LogoStrip = ({ label = "Built with the stacks modern teams trust" }: { label?: string }) => (
-  <div className="relative border-y border-border/80 bg-background/60 backdrop-blur">
+  <div className="relative border-t border-border/60 bg-card/40 backdrop-blur-sm">
     <p className="sr-only">{label}</p>
     <div className="max-w-7xl mx-auto overflow-hidden [mask-image:linear-gradient(to_right,transparent,#000_12%,#000_88%,transparent)]">
-      <div className="flex w-max animate-marquee items-center gap-16 py-7 hover:[animation-play-state:paused] cursor-default select-none">
+      <div className="flex w-max animate-marquee items-center gap-16 py-6 hover:[animation-play-state:paused] cursor-default select-none">
         {[...items, ...items].map((item, i) => (
           <span
             key={`${item.name}-${i}`}
